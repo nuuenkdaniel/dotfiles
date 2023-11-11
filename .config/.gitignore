@@ -1,6 +1,0 @@
-# Ignore all
-
-# Exceptions
-!.gitignore
-!hypr/
-!waybar/

@@ -3,5 +3,5 @@
 
 # Exceptions
 !.gitignore
-!.config/hypr
+!.config/
 
