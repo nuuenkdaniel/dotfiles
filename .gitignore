@@ -2,6 +2,6 @@
 *
 
 # Exceptions
-!/.gitignore
+!.gitignore
 !.config/*
 

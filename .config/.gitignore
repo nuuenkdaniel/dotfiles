@@ -2,5 +2,5 @@
 *
 
 # Exceptions
-!/.gitignore
-!~/.config/hypr/*
+!.gitignore
+!hypr/
