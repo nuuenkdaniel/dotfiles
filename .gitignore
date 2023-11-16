@@ -2,6 +2,6 @@
 *
 
 # Except
-!/.config/hypr/
-!/.config/waybar/
+!~/.config/hypr/
+!~/.config/waybar/
 !/.gitignore
