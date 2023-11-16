@@ -1,0 +1,7 @@
+# Ignore all
+*
+
+# Except
+!/.config/hypr/
+!/.config/waybar/
+!/.gitignore
