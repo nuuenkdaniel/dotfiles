@@ -59,7 +59,7 @@
         	"format": "{}% "
 	},
         "tray": {
-    		"icon-size": 16,
-		"spacing": 5
+    		"icon-size": 21,
+		"spacing": 10
     	}
 }

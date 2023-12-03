@@ -48,7 +48,7 @@ tooltip {
 	border-radius: 15px;
 }
 
-#custom-date, #clock, #battery, #pulseaudio, #network, #workspaces, #cpu, #memory {
+#custom-date, #clock, #battery, #pulseaudio, #network, #workspaces, #cpu, #memory, #tray {
 	background-color: #221C35;
 	padding: 5px 10px;
 	margin: 5px 0px;
@@ -100,19 +100,10 @@ tooltip {
 }
 
 #tray {
-    background-color: #2980b9;
-    border-radius: 15px;
-    padding: 4px;
-    color: #ffffff;
-    margin: 6px 0;
-}
-
-#tray > .passive {
-    -gtk-icon-effect: dim;
-}
-
-#tray > .needs-attention {
-    -gtk-icon-effect: highlight;
-    background-color: #eb4d4b;
+    background: #282828;
+    margin: 5px 5px 5px 5px;
+    border-radius: 16px;
+    padding: 0px 5px;
+    /*border-right: solid 1px #282738;*/
 }
 
