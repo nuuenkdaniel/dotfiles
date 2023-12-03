@@ -37,6 +37,7 @@
         	"format-linked": "{ifname} (No IP) ",
         	"format-disconnected": "󰤮 Disconnected",
 		"tooltip-format-wifi": "Signal Strenght: {signalStrength}% | Down Speed: {bandwidthDownBits}, Up Speed: {bandwidthUpBits}",
+		"format-alt": "{ifname}: {ipaddr}/{cidr}"
 	},
 	"pulseaudio": {
 		"on-click": "pactl set-sink-mute 45 toggle",
@@ -59,7 +60,7 @@
         	"format": "{}% "
 	},
         "tray": {
-    		"icon-size": 21,
+    		"icon-size": 15,
 		"spacing": 10
     	}
 }
