@@ -1,7 +1,7 @@
 {
     "layer": "top", 
     "height": 50,
-    "modules-center": ["hyprland/workspaces", "network", "pulseaudio", "battery", "cpu", "memory", "custom/date", "clock"],
+    "modules-center": ["hyprland/workspaces", "network", "pulseaudio", "cpu", "memory", "custom/date", "clock"],
     "modules-right": ["tray"],
     // Modules configuration
 	"hyprland/workspaces": {
@@ -53,11 +53,11 @@
         	},
 	},
 	"cpu": {
-        	"format": "{usage}% ",
+        	"format": " {usage}%",
         	"tooltip": false
     	},
     	"memory": {
-        	"format": "{}% "
+        	"format": " {}%"
 	},
         "tray": {
     		"icon-size": 15,
