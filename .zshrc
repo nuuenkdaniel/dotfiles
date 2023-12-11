@@ -68,3 +68,5 @@ setprompt() {
 }
 setprompt
 # End of lines added by compinstall
+
+neofetch

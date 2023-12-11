@@ -1,13 +1,13 @@
 {
     "layer": "top", 
     "height": 50,
-    "modules-center": ["hyprland/workspaces", "network", "pulseaudio", "cpu", "memory", "custom/date", "clock"],
+    "modules-center": ["hyprland/workspaces", "network", "pulseaudio", "custom/date", "clock"],
     "modules-right": ["tray"],
     // Modules configuration
 	"hyprland/workspaces": {
 		"disable-scroll": true,
 		"all-outputs": true,
-		"format": "{icon}",
+		//"format": "{icon}",
          	"format-icons": {
              		"1": "一",
              		"2": "二",
@@ -22,9 +22,9 @@
          }
      },
 	"custom/date": {
-    		"format": "󰸗 {}",
-		"interval": 3600,
-		"exec": "$HOME/bin/waybar-date.sh"
+		"exec": "~/.local/bin/waybar-date.sh",
+		"interval": 5,
+    		"format": "󰸗 {}"
 	},
 	"clock": {
 		"timezone": "America/New_York",
@@ -51,13 +51,6 @@
             	"car": "",
             	"default": ["", "", ""]
         	},
-	},
-	"cpu": {
-        	"format": " {usage}%",
-        	"tooltip": false
-    	},
-    	"memory": {
-        	"format": " {}%"
 	},
         "tray": {
     		"icon-size": 15,
