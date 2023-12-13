@@ -2,6 +2,8 @@
 !/README.md
 !/.gitignore
 
+!/.zshrc
+
 !/.local
 !/.local/bin
 !/.local/bin/*
