@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+grim ~/Pictures/Screenshots/$(date '+%m-%d-%y_%H:%M:%S').png
+notify-send Screenshot "Saved to Screenshot folder"

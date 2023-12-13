@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+activewindow=$(xdotool getactivewindow)
+
+exec xdotool click --delay 1000 --window "$activewindow" --repeat 1000000 1

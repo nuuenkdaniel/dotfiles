@@ -1,0 +1,10 @@
+/**
+!/README.md
+!/.gitignore
+
+!/.local
+!/.local/bin
+!/.local/bin/*
+
+
+

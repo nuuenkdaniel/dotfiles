@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+exec swayidle -w \ 
+	timeout 300 swaylock -c 000000\
+	timeout 500 pm-suspend

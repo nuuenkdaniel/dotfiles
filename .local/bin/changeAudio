@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+currentDevice=$(pactl get-default-sink)
+headphone=$(pactl list short | awk '{print $2}' | grep "^alsa_output\.usb-Logitech_PRO_X.*\.analog-stereo$")
+speaker=$(pactl list short | awk '{print $2}' | grep "^alsa_output\.pci.*analog-stereo$")
+
+if [[ "$currentDevice" == "$speaker" ]]; then
+	# Switching to headphones
+	exec pactl set-default-sink $headphone
+else
+	# Switching to speakers
+	exec pactl set-default-sink $speaker
+fi
+
