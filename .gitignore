@@ -5,7 +5,7 @@
 !/.zshrc
 
 !/.ssh
-!/.ssh/**
+!/.ssh/config
 
 !/.local
 !/.local/bin
