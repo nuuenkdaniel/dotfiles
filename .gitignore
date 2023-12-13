@@ -6,5 +6,8 @@
 !/.local/bin
 !/.local/bin/*
 
+!/.config
+!/.config/hypr
+!/.config/hypr/**
 
 
