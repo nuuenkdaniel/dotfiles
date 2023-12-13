@@ -9,5 +9,7 @@
 !/.config
 !/.config/hypr
 !/.config/hypr/**
+!/.config/waybar
+!/.config/waybar/*
 
 
