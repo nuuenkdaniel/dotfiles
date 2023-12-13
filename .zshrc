@@ -12,7 +12,7 @@ zstyle :compinstall filename '/home/Danuu/.zshrc'
 # Alias
 alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias ls="exa"
-alias syncDrive="rclone copy -L /home/Danuu/OneDrive OneDrive:Danuu"
+alias syncDrive="rclone copy -L /home/Danuu/OneDrive OneDrive:CaptNuu"
 
 autoload -Uz compinit
 compinit
