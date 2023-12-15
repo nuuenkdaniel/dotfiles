@@ -1,1 +1,0 @@
-/etc/profile.d/hlstart.sh
