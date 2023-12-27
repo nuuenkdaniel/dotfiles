@@ -2,13 +2,13 @@
 Config files for my desktop
 
 ### Main Stuff ###
-OS: Arch
-WM: hyprland
-Launcher: wofi
-File Manager: dolphin
-Info Bar: waybar
-Terminal: kitty
-Shell: zsh
+* OS: Arch
+* WM: hyprland
+* Launcher: wofi
+* File Manager: dolphin
+* Info Bar: waybar
+* Terminal: kitty
+* Shell: zsh
 
 ### Installation ###
 ```
