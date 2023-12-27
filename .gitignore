@@ -4,6 +4,8 @@
 
 !/.zshrc
 
+!/.pkglist.txt
+
 !/.local
 !/.local/bin
 !/.local/bin/*
