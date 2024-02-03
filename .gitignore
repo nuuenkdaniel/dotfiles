@@ -29,3 +29,5 @@
 !/.config/neofetch/**
 !/.config/wofi
 !/.config/wofi/**
+!/.config/nvim
+!/.config/nvim/**
