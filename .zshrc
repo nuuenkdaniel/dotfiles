@@ -13,6 +13,7 @@ zstyle :compinstall filename '/home/Danuu/.zshrc'
 alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias ls="exa"
 alias syncDrive="rclone copy -L /home/Danuu/OneDrive OneDrive:Lapnuu"
+alias neofetch2="neofetch --ascii ~/.config/neofetch/ascii-art.txt --set-color 6"
 
 autoload -Uz compinit
 compinit
