@@ -9,7 +9,7 @@ return {
 	"williamboman/mason-lspconfig.nvim",
 	config = function()
 		require("mason-lspconfig").setup({
-			ensure_installed = { "lua_ls" }
+			ensure_installed = { "lua_ls", "jdtls", "quick_lint_js", "jedi_language_server", "html" }
 		})
 	end
     },
@@ -18,7 +18,10 @@ return {
 	config = function()
 		local lspconfig = require("lspconfig")
 		lspconfig.lua_ls.setup({})
-		vim.keymap.set('n', '<C-k>', vim.lsp.buf.hover, {})
+		lspconfig.jdtls.setup({})
+		lspconfig.quick_lint_js.setup({})
+		lspconfig.jedi_language_server.setup({})
+		lspconfig.html.setup({})
 	end
     }
 }
