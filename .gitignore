@@ -9,6 +9,11 @@
 !/.local
 !/.local/bin
 !/.local/bin/**
+!/.local/share
+!/.local/share/applications_X
+!/.local/share/applications_X/**
+!/.local/share/applications_wayland
+!/.local/share/applications_wayland/**
 
 !/.config
 !/.config/hypr
