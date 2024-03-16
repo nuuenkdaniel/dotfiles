@@ -6,6 +6,9 @@
 
 !/.pkglist.txt
 
+!/.Xresources
+!/.xinitrc
+
 !/.local
 !/.local/bin
 !/.local/bin/**
