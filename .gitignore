@@ -28,3 +28,5 @@
 !/.config/wofi/**
 !/.config/nvim
 !/.config/nvim/**
+!/.config/i3
+!/.config/i3/**

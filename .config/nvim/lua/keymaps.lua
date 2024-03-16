@@ -1,4 +1,7 @@
 -- Telescope keybinds
+vim.keymap.set('n', '<C-h>', ':Telescope help_tags<CR>', {})
+
+-- Neotree keybinds
 vim.keymap.set('n', '<C-p>', ':Neotree toggle right<CR>', {})
 
 -- LSP keybinds
