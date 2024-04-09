@@ -1,0 +1,4 @@
+#!/bin/sh
+
+xrandr --output DP-3 --auto --output DP-2 --off --output DP-1 --off
+
