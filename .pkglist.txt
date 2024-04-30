@@ -39,7 +39,7 @@ ttf-dejavu
 ttf-droid
 ttf-fira-mono
 ttf-font-awesome
-ttf-mononopeki-nerd
+ttf-mononoki-nerd
 unzip
 wev
 wine

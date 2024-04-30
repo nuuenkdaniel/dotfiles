@@ -6,9 +6,6 @@
 
 !/.pkglist.txt
 
-!/.ssh
-!/.ssh/config
-
 !/.local
 !/.local/bin
 !/.local/bin/*
