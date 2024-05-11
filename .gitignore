@@ -3,6 +3,7 @@
 !/.gitignore
 
 !/.zshrc
+!/.zshenv
 
 !/.pkglist.txt
 
@@ -11,6 +12,7 @@
 !/.local/bin/*
 
 !/.config
+!/.config/mimeapps.list
 !/.config/hypr
 !/.config/hypr/**
 !/.config/waybar

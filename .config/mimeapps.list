@@ -1,0 +1,13 @@
+[Added Associations]
+application/pdf=microsoft-edge-stable-2.desktop;microsoft-edge.desktop;
+
+[Default Applications]
+application/pdf=microsoft-edge-stable-2.desktop;
+inode/directory=org.kde.dolphin.desktop
+text/html=microsoft-edge.desktop
+x-scheme-handler/about=microsoft-edge.desktop
+x-scheme-handler/http=microsoft-edge.desktop
+x-scheme-handler/https=microsoft-edge.desktop
+x-scheme-handler/ror2mm=r2modman.desktop
+x-scheme-handler/unknown=microsoft-edge.desktop
+text/plain=code-url-handler.desktop
