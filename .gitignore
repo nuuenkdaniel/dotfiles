@@ -10,6 +10,15 @@
 !/.local
 !/.local/bin
 !/.local/bin/*
+!/.local/share
+!/.local/share/applications
+!/.local/share/applications/code-oss-url-handler.desktop
+!/.local/share/applications/code-oss.desktop
+!/.local/share/applications/code-url-handler.desktop
+!/.local/share/applications/discord.desktop
+!/.local/share/applications/microsoft-edge-stable-2.desktop
+!/.local/share/applications/microsoft-edge-stable.desktop
+!/.local/share/applications/microsoft-edge.desktop
 
 !/.config
 !/.config/mimeapps.list

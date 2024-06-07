@@ -1,0 +1,6 @@
+[Desktop Entry]
+Exec=microsoft-edge-stable
+MimeType=application/pdf;
+Name=microsoft-edge-stable $WAYLANDAPP
+NoDisplay=true
+Type=Application
