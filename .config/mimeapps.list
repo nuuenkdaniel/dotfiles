@@ -13,3 +13,4 @@ x-scheme-handler/unknown=microsoft-edge.desktop
 text/plain=code-oss.desktop
 text/json=code-oss.desktop
 application/json=code-oss.desktop
+modrinth=modrinth-app-handler.desktop
