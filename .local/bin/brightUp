@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+brightnessctl set 5%+
+notify-send Brightness_Change "brightness +5"
