@@ -17,7 +17,6 @@ neovim
 networkmanager
 ttf-font-awesome
 ttf-fira-mono
-swayidle
 swaylock
 sof-firmware
 polkit
@@ -45,3 +44,5 @@ wev
 wine
 code
 os-prober
+npm
+hypridle
