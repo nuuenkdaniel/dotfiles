@@ -39,3 +39,4 @@
 !/.config/wofi/**
 !/.config/nvim
 !/.config/nvim/**
+!/.config/kdeglobals
