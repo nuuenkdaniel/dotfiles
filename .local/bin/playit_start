@@ -1,0 +1,3 @@
+#!/bin/sh
+
+~/.local/bin/playit/playit-linux-amd64
