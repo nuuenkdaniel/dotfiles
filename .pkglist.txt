@@ -46,3 +46,4 @@ code
 os-prober
 npm
 hypridle
+sbctl

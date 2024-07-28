@@ -1,0 +1,4 @@
+#!/bin/sh
+
+ssh -R 4554:localhost:4554 nuu@custom.domain
+notify-send "SSH Tunnel created with home server" 
