@@ -42,3 +42,5 @@
 !/.config/nvim
 !/.config/nvim/**
 !/.config/kdeglobals
+!/.config/ags
+!/.config/ags/**
