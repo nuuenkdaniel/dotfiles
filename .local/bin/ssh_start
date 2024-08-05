@@ -1,3 +1,0 @@
-#!/bin/sh
-
-ssh -N -R 5000:localhost:4554 nuu@captnuu.duckdns.org -p 4554 && notify-send "SSH Tunnel created with home server" 
