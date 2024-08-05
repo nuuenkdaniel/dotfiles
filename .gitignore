@@ -12,7 +12,7 @@
 !/.local
 !/.local/bin
 !/.local/bin/*
-/.local/bin/duck.sh
+/.local/bin/ssh_start
 !/.local/share
 !/.local/share/applications
 !/.local/share/applications/code-oss-url-handler.desktop
