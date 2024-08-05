@@ -13,6 +13,7 @@
 !/.local
 !/.local/bin
 !/.local/bin/**
+/.local/bin/ssh_remote_connect
 !/.local/share
 !/.local/share/applications_X
 !/.local/share/applications_X/**

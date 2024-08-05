@@ -48,3 +48,4 @@ brightnessctl
 neofetch
 discord
 microsoft-edge-stable-bin
+hypridle

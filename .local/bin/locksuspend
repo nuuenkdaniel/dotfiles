@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-swayidle -w \ 
-	timeout 400 swaylock -c 000000 \
-	timeout 700 systemctl suspend \
-	before-sleep swaylock -f -c 000000 &
