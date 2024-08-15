@@ -1,71 +1,65 @@
 {
-    "layer": "top", 
+  "layer": "top", 
     "height": 50,
     "modules-center": ["hyprland/workspaces", "sway/workspaces", "network", "pulseaudio", "battery", "custom/date", "clock"],
     "modules-right": ["tray"],
     // Modules configuration
-    	"hyprland/workspaces": {
-		"disable-scroll": true,
-		"all-outputs": true
-     },
-	"sway/workspaces": {
-		"disable-scroll": true,
-		"all-outputs": true
-     },
-	"custom/date": {
-		"exec": "~/.local/bin/waybar-date.sh",
-		"interval": 3600,
-    		"format": "󰸗 {}"
-	},
-	"clock": {
-		"timezone": "America/New_York",
-		"format": "󰅐 {:%H:%M} ",
-        	"tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-		"format-alt": "󰅐 {:%H:%M:%S} ",
-		"interval": 1
-	},
-	"network": {
-        	"format-wifi": "  {essid}",
-        	"format-ethernet": "󰤮 Disconnected",
-        	"format-linked": "{ifname} (No IP) ",
-        	"format-disconnected": "󰤮 Disconnected",
-		"tooltip-format-wifi": "Signal Strenght: {signalStrength}% | Down Speed: {bandwidthDownBits}, Up Speed: {bandwidthUpBits}",
-		"format-alt": "{ifname}: {ipaddr}/{cidr}"
-	},
-	"pulseaudio": {
-		"on-click": "pactl set-sink-mute 45 toggle",
-		"format": "{icon} {volume}%",
-        	"format-muted": "󰖁 Muted",
-        	"format-icons": {
-            	"hands-free": "",
-            	"headset": "",
-            	"phone": "",
-            	"portable": "",
-            	"car": "",
-            	"default": ["", "", ""]
-        	},
-	},
-	"battery": {
-        	"states": {
-            		"warning": 30,
-            		"critical": 15,
-        	},
-        	"format": "{icon} {capacity}%",
-        	"format-charging": "󰂄 {capacity}%",
-        	"format-plugged": "󰂄{capacity}%",
-        	"format-alt": "{icon} {time}",
-        	"format-full": "󱈑 {capacity}%",
-        	"format-icons": ["󱊡", "󱊢", "󱊣"]
-	},
-	"cpu": {
-        	"format": " {usage}%",
-        	"tooltip": false
-    	},
-    	"memory": {
-        	"format": " {}%"
-	},
-        "tray": {
-    		"icon-size": 15,
-		"spacing": 10
-    	}
+    "hyprland/workspaces": {
+      "disable-scroll": true,
+      "all-outputs": true
+    },
+    "sway/workspaces": {
+      "disable-scroll": true,
+      "all-outputs": true
+    },
+    "custom/date": {
+      "exec": "~/.local/bin/waybar-date.sh",
+      "interval": 3600,
+      "format": "󰸗 {}"
+    },
+    "clock": {
+      "timezone": "America/New_York",
+      "format": "󰅐 {:%H:%M} ",
+      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+      "format-alt": "󰅐 {:%H:%M:%S} ",
+      "interval": 1
+    },
+    "network": {
+      "format-wifi": "  {essid}",
+      "format-ethernet": "󰤮 Disconnected",
+      "format-linked": "{ifname} (No IP) ",
+      "format-disconnected": "󰤮 Disconnected",
+      "tooltip-format-wifi": "Signal Strenght: {signalStrength}% | Down Speed: {bandwidthDownBits}, Up Speed: {bandwidthUpBits}",
+      "format-alt": "{ifname}: {ipaddr}/{cidr}"
+    },
+    "pulseaudio": {
+      "on-click": "pactl set-sink-mute 45 toggle",
+      "format": "{icon} {volume}%",
+      "format-muted": "󰖁 Muted",
+      "format-icons": {
+        "hands-free": "",
+        "headset": "",
+        "phone": "",
+        "portable": "",
+        "car": "",
+        "default": ["", "", ""]
+      },
+    },
+    "battery": {
+      "states": {
+        "warning": 30,
+        "critical": 15,
+      },
+      "format": "{icon} {capacity}%",
+      "format-charging": "󰂄 {capacity}%",
+      "format-plugged": "󰂄{capacity}%",
+      "format-alt": "{icon} {time}",
+      "format-full": "󱈑 {capacity}%",
+      "format-icons": ["󱊡", "󱊢", "󱊣"]
+        "interval": 5
+    },
+    "tray": {
+      "icon-size": 15,
+      "spacing": 10
+    }
 }
