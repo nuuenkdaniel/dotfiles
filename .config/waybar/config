@@ -1,9 +1,9 @@
 {
-  "layer": "top", 
+    "layer": "top", 
     "height": 50,
-    "modules-center": ["hyprland/workspaces", "sway/workspaces", "network", "pulseaudio", "battery", "custom/date", "clock"],
+    "modules-center": ["hyprland/workspaces", "network", "pulseaudio", "battery", "custom/date", "clock"],
     "modules-right": ["tray"],
-    // Modules configuration
+
     "hyprland/workspaces": {
       "disable-scroll": true,
       "all-outputs": true
@@ -52,11 +52,11 @@
       },
       "format": "{icon} {capacity}%",
       "format-charging": "󰂄 {capacity}%",
-      "format-plugged": "󰂄{capacity}%",
+      "format-plugged": "󰂄 {capacity}%",
       "format-alt": "{icon} {time}",
       "format-full": "󱈑 {capacity}%",
-      "format-icons": ["󱊡", "󱊢", "󱊣"]
-        "interval": 5
+      "format-icons": ["󱊡", "󱊢", "󱊣"],
+      "interval": 5
     },
     "tray": {
       "icon-size": 15,
