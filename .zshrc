@@ -43,7 +43,16 @@ zstyle ':completion:*:killall:*'   force-list always
 # End of lines added by compinstall
 
 # Prompt style
-setopt prompt_subst
-PS1="%F{green}[%n@%M]%f%F{blue}[%~]%f%F{green}%#%f "
+setprompt() {
+  setopt prompt_subst
 
+  if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then 
+    p_host='%F{cyan}[%f%F{green}%n%f%F{cyan}@%f%F{yellow}%M%f%F{cyan}]%f'
+  else 
+    p_host=''
+  fi
+
+  PS1="${p_host}%F{cyan}[%~]%f " 
+}
+setprompt
 neofetch
