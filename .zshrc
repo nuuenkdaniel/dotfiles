@@ -48,33 +48,12 @@ setprompt() {
   setopt prompt_subst
 
   if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then 
-    p_host='%F{cyan}[%f%F{green}%n%f%F{cyan}@%f%F{green}%M%f%F{cyan}[%f'
+    p_host='%F{cyan}[%f%F{green}%n%f%F{cyan}@%f%F{green}%M%f%F{cyan}]%f'
   else 
     p_host=''
   fi
 
   PS1="${p_host}%F{cyan}[%~]%f "
-
-  #if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then 
-    #p_host='%F{yellow}%M%f'
-  #else
-    #p_host='%F{green}%M%f'
-  #fi
-
-
-
-  #PS1=${(j::Q)${(Z:Cn:):-$'
-    #%F{cyan}[%f
-    #%(!.%F{red}%n%f.%F{green}%n%f)
-    #%F{cyan}@%f
-    #${p_host}
-    #%F{cyan}][%f
-    #%F{blue}%~%f
-    #%F{cyan}]%f
-    #%(!.%F{red}%#%f.%F{green}%#%f)
-    #" "
-  #'}}
-
   PS2=$'%_>'
   RPROMPT=$'${vcs_info_msg_0_}'
 }
