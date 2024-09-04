@@ -48,8 +48,6 @@ setprompt() {
 
   if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then 
     p_host='%F{cyan}[%f%F{green}%n%f%F{cyan}@%f%F{yellow}%M%f%F{cyan}]%f'
-  else 
-    p_host=''
   fi
 
   PS1="${p_host}%F{cyan}[%~]%f " 

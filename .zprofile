@@ -8,7 +8,6 @@ elif [[ "$(tty)" == "/dev/tty2" ]]; then
 	exec sway
 elif [[ "$(tty)" == "/dev/tty1" ]]; then
 	exec Hyprland
-  exec ~/.local/bin/playit_start
 else
 	echo "In $(tty), WM's will not start on launch"
 fi
