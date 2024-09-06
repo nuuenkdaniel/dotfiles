@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+ssh CaptNuu 'WAYLAND_DISPLAY=HEADLESS-1 sunshine'
