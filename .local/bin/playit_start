@@ -1,3 +1,0 @@
-#!/bin/sh
-
-systemd-inhibit --what=idle --why="Running playit tunnel" ~/.local/bin/playit/playit-linux-amd64

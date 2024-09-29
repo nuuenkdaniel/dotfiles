@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+IP_TAIL=$(ip a | grep "tailscale0$" | awk '{print $2}' | sed 's/\/.*//')
+
+WLR_BACKENDS=headless WLR_LIBINPUT_NO_DEVICES=1 sway & WAYLAND_DISPLAY=wayland-1 wayvnc --log-level=info $IP_TAIL
+
+trap 'kill $(jobs -p)' EXIT

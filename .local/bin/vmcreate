@@ -1,8 +1,0 @@
-#!/bin/sh
-
-if [ -z "$(xrandr --listactivemonitors | grep 'DP-3~1')" ]; then
-  xrandr --setmonitor DP-3~1 960/254x1440/173+0+0 DP-1
-  xrandr --fb 2560x1440
-else
-  xrandr --delmonitor DP-3~1
-fi

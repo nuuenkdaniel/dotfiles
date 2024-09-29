@@ -1,7 +1,7 @@
 {
     "layer": "top", 
     "height": 50,
-    "modules-center": ["hyprland/workspaces", "network", "pulseaudio", "custom/date", "clock"],
+    "modules-center": ["sway/workspaces", "hyprland/workspaces", "network", "pulseaudio", "custom/date", "clock"],
     "modules-right": ["tray"],
     // Modules configuration
 	"hyprland/workspaces": {
