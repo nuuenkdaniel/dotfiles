@@ -7,9 +7,10 @@ else
   if [[ "$(tty)" == "/dev/tty3" ]]; then
 	  exec startx
   elif [[ "$(tty)" == "/dev/tty2" ]]; then
-    WLR_BACKENDS=headless,libinput sway
+    # openrgb --profile "Night" & WLR_BACKENDS=headless,libinput sway
+    exec Hyprland -c .config/hypr/hyprland-sunshine.conf
   elif [[ "$(tty)" == "/dev/tty1" ]]; then
-	  exec pkill sunshine & pkill sway & Hyprland
+	  exec Hyprland
   else
 	  echo "In $(tty), WM's will not start on launch"
   fi
