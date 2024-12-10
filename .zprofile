@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-
 if [[ -n "$SSH_CLIENT" ]]; then
+  openrgb --profile "Night"
+  export DESKTOP_SESSION="sway"    
+  export XDG_CURRENT_DESKTOP="sway"
+  export XDG_SESSION_DESKTOP="sway"
+  export XDG_SESSION_TYPE="wayland"
+  export WLR_BACKENDS="headless"
 	echo "In SSH Session, WM's will not run"
 else
   openrgb --profile "Normal"
