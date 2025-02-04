@@ -5,7 +5,7 @@ Config files for my desktop
 * OS: Arch
 * WM: hyprland
 * Launcher: wofi
-* File Manager: dolphin
+* File Manager: thunar
 * Info Bar: waybar
 * Terminal: kitty
 * Shell: zsh
