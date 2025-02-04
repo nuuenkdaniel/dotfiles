@@ -1,48 +1,54 @@
 {
-    "layer": "top", 
+  "layer": "top", 
     "height": 50,
-    "modules-center": ["sway/workspaces", "hyprland/workspaces", "network", "pulseaudio", "custom/date", "clock"],
+    "modules-center": ["sway/workspaces", "hyprland/workspaces", "network", "pulseaudio", "custom/mouse-bat", "custom/date", "clock"],
     "modules-right": ["tray"],
     // Modules configuration
-	"hyprland/workspaces": {
-		"disable-scroll": true,
-		"all-outputs": true,
-     },
-	"custom/date": {
-		"exec": "~/.local/bin/waybar-date.sh",
-		"interval": 5,
-    		"format": "󰸗 {}"
-	},
-	"clock": {
-		"timezone": "America/New_York",
-		"format": "󰅐 {:%H:%M} ",
-        	"tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-		"format-alt": "󰅐 {:%H:%M:%S} ",
-		"interval": 1
-	},
-	"network": {
-        	"format-wifi": "  {essid}",
-        	"format-ethernet": "󰤮 Disconnected",
-        	"format-linked": "{ifname} (No IP) ",
-        	"format-disconnected": "󰤮 Disconnected",
-		"tooltip-format-wifi": "Signal Strenght: {signalStrength}% | Down Speed: {bandwidthDownBits}, Up Speed: {bandwidthUpBits}",
-		"format-alt": "{ifname}: {ipaddr}/{cidr}"
-	},
-	"pulseaudio": {
-		"on-click": "pactl set-sink-mute 45 toggle",
-		"format": "{icon} {volume}%",
-        	"format-muted": "󰖁 Muted",
-        	"format-icons": {
-            	"hands-free": "",
-            	"headset": "",
-            	"phone": "",
-            	"portable": "",
-            	"car": "",
-            	"default": ["", "", ""]
-        	},
-	},
-        "tray": {
-    		"icon-size": 15,
-		"spacing": 10
-    	}
+    "hyprland/workspaces": {
+      "disable-scroll": true,
+      "all-outputs": true,
+    },
+    "custom/date": {
+      "exec": "~/.config/waybar/bin/waybar-date.sh",
+      "interval": 5,
+      "format": "󰸗 {}"
+    },
+    "custom/mouse-bat": {
+      "exec": "~/.config/waybar/bin/g502-bat.sh",
+      "interval": 300,
+      "format": "󰍽 {}",
+      "tooltip-format": "G502"
+    },
+    "clock": {
+      "timezone": "America/New_York",
+      "format": "󰅐 {:%H:%M} ",
+      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+      "format-alt": "󰅐 {:%H:%M:%S} ",
+      "interval": 1
+    },
+    "network": {
+      "format-wifi": "  {essid}",
+      "format-ethernet": "󰤮 Disconnected",
+      "format-linked": "{ifname} (No IP) ",
+      "format-disconnected": "󰤮 Disconnected",
+      "tooltip-format-wifi": "Signal Strenght: {signalStrength}% | Down Speed: {bandwidthDownBits}, Up Speed: {bandwidthUpBits}",
+      "format-alt": "{ifname}: {ipaddr}/{cidr}"
+    },
+    "pulseaudio": {
+      "on-click": "pactl set-sink-mute 45 toggle",
+      "format": "{icon} {volume}%",
+      "format-muted": "󰖁 Muted",
+      "format-icons": {
+        "hands-free": "",
+        "headset": "",
+        "phone": "",
+        "portable": "",
+        "car": "",
+        "default": ["", "", ""]
+      },
+    },
+    "tray": {
+      "icon-size": 15,
+      "spacing": 10
+    }
 }

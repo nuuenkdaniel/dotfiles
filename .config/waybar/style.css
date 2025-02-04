@@ -48,7 +48,7 @@ tooltip {
 	border-radius: 15px;
 }
 
-#custom-date, #clock, #battery, #pulseaudio, #network, #workspaces, #cpu, #memory, #tray {
+#custom-date, #custom-mouse-bat, #clock, #battery, #pulseaudio, #network, #workspaces, #cpu, #memory, #tray {
 	background-color: #221C35;
 	padding: 5px 10px;
 	margin: 5px 0px;
@@ -60,7 +60,11 @@ tooltip {
 }
 
 #custom-date {
-	color: #9ec3c4;
+  color: #9ec3c4;
+}
+
+#custom-mouse-bat {
+  color: #9ec49f;
 }
 
 #clock {
