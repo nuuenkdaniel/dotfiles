@@ -11,13 +11,14 @@
     "custom/date": {
       "exec": "~/.config/waybar/bin/waybar-date.sh",
       "interval": 5,
-      "format": "󰸗 {}"
+      "format": "󰸗 {}",
     },
     "custom/mouse-bat": {
       "exec": "~/.config/waybar/bin/g502-bat.sh",
+      "return-type": "json",
       "interval": 300,
       "format": "󰍽 {}",
-      "tooltip-format": "G502"
+      "tooltip-format": "{alt}"
     },
     "clock": {
       "timezone": "America/New_York",
