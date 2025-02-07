@@ -1,7 +1,7 @@
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
-SAVEHIST=1000
+SAVEHIST=500
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -43,14 +43,30 @@ zstyle ':completion:*:killall:*'   force-list always
 # End of lines added by compinstall
 
 # Prompt style
-setprompt() {
-  setopt prompt_subst
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:*' check-for-staged-changes true
+zstyle ':vcs_info:git*' formats '%F{green}[%b]%f'
 
-  if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then 
-    p_host='%F{cyan}[%f%F{green}%n%f%F{cyan}@%f%F{yellow}%M%f%F{cyan}]%f'
+function check_git_status() {
+  git_status=$(git status --porcelain 2> /dev/null | tail -n1)
+  git_star=""
+  if [[ -n $git_status ]]; then
+    git_star="%F{red}*%f"
   fi
-
-  PS1="${p_host}%F{cyan}[%~]%f " 
+  echo $git_star
 }
-setprompt
+
+function precmd() {
+  vcs_info
+  print -Pn "\e]133;A\e\\" # Prompt Jumping
+}
+
+setopt prompt_subst
+
+if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then 
+  p_host='%F{cyan}[%f%F{green}%n%f%F{cyan}@%f%F{yellow}%M%f%F{cyan}]%f'
+fi
+
+PROMPT='${check_git_status}${vcs_info_msg_0_}${p_host}%F{cyan}[%~]%f '
 neofetch

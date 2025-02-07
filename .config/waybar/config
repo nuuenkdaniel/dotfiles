@@ -36,7 +36,7 @@
       "format-alt": "{ifname}: {ipaddr}/{cidr}"
     },
     "pulseaudio": {
-      "on-click": "pactl set-sink-mute 45 toggle",
+      "on-click": "pactl set-sink-mute $(pactl get-default-sink) toggle",
       "format": "{icon} {volume}%",
       "format-muted": "󰖁 Muted",
       "format-icons": {
