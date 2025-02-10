@@ -1,7 +1,7 @@
 {
     "layer": "top", 
     "height": 50,
-    "modules-center": ["hyprland/workspaces", "network", "pulseaudio", "battery", "custom/date", "clock"],
+    "modules-center": ["hyprland/workspaces", "network", "pulseaudio", "custom/bluetooth-toggle", "battery", "custom/date", "clock"],
     "modules-right": ["tray"],
 
     "hyprland/workspaces": {
@@ -13,16 +13,22 @@
       "all-outputs": true
     },
     "custom/date": {
-      "exec": "~/.local/bin/waybar-date.sh",
+      "exec": "~/.config/waybar/bin/waybar-date.sh",
       "interval": 3600,
       "format": "󰸗 {}"
+    },
+    "custom/bluetooth-toggle": {
+      "exec": "~/.config/waybar/bin/bluetooth-button-init.sh",
+      "on-click": "~/.config/waybar/bin/bluetooth-button.sh",
+      "format": "{}",
+      "interval": 1
     },
     "clock": {
       "timezone": "America/New_York",
       "format": "󰅐 {:%H:%M} ",
       "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
       "format-alt": "󰅐 {:%H:%M:%S} ",
-      "interval": 1
+      "interval": 2
     },
     "network": {
       "format-wifi": "  {essid}",
