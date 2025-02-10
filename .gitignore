@@ -16,10 +16,6 @@
 !/.local/bin/**
 /.local/bin/ssh_remote_connect
 !/.local/share
-!/.local/share/applications_X
-!/.local/share/applications_X/**
-!/.local/share/applications_wayland
-!/.local/share/applications_wayland/**
 
 !/.config
 !/.config/hypr
@@ -39,5 +35,6 @@
 !/.config/wofi/**
 !/.config/nvim
 !/.config/nvim/**
+/.config/nvim/lazy-lock.json
 !/.config/i3
 !/.config/i3/**
