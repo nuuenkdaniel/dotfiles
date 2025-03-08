@@ -68,5 +68,14 @@ if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then
   p_host='%F{cyan}[%f%F{green}%n%f%F{cyan}@%f%F{yellow}%M%f%F{cyan}]%f'
 fi
 
-PROMPT='${check_git_status}${vcs_info_msg_0_}${p_host}%F{cyan}[%~]%f '
+PROMPT='$(check_git_status)${vcs_info_msg_0_}${p_host}%F{cyan}[%~]%f '
 neofetch
+
+
+# BEGIN opam configuration
+# This is useful if you're using opam as it adds:
+#   - the correct directories to the PATH
+#   - auto-completion for the opam binary
+# This section can be safely removed at any time if needed.
+[[ ! -r '/home/Danuu/.opam/opam-init/init.zsh' ]] || source '/home/Danuu/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+# END opam configuration

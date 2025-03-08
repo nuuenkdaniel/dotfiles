@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 if [[ -n "$SSH_CLIENT" ]]; then
-  openrgb --profile "Night" &
+  openrgb --profile "Night" > /dev/null &
   export DESKTOP_SESSION="sway"    
   export XDG_CURRENT_DESKTOP="sway"
   export XDG_SESSION_DESKTOP="sway"
@@ -8,7 +8,7 @@ if [[ -n "$SSH_CLIENT" ]]; then
   export WLR_BACKENDS="headless"
 	echo "In SSH Session, WM's will not run"
 else
-  openrgb --profile "Normal" &
+  openrgb --profile "Normal" > /dev/null & 
   if [[ "$(tty)" == "/dev/tty3" ]]; then
 	  exec startx
   elif [[ "$(tty)" == "/dev/tty2" ]]; then

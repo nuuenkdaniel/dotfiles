@@ -5,15 +5,16 @@ text/plain=nvim-qt-4.desktop;nvim-qt-3.desktop;nvim-qt-2.desktop;
 
 [Default Applications]
 application/json=nvim-qt-2.desktop
-application/pdf=microsoft-edge-stable-2.desktop;
+application/pdf=firefox.desktop
 image/jpeg=imv-2.desktop;
 inode/directory=org.kde.dolphin.desktop
 modrinth=modrinth-app-handler.desktop
-text/html=microsoft-edge.desktop
-text/json=code-oss.desktop
+text/html=firefox.desktop
+text/json=nvim-qt-2.desktop
 text/plain=nvim-qt-4.desktop;
-x-scheme-handler/about=microsoft-edge.desktop
-x-scheme-handler/http=microsoft-edge.desktop
-x-scheme-handler/https=microsoft-edge.desktop
+x-scheme-handler/about=firefox.desktop
+x-scheme-handler/http=firefox.desktop
+x-scheme-handler/https=firefox.desktop
 x-scheme-handler/ror2mm=r2modman.desktop
-x-scheme-handler/unknown=microsoft-edge.desktop
+x-scheme-handler/unknown=firefox.desktop
+x-scheme-handler/discord=discord.desktop
