@@ -39,4 +39,8 @@ return {
     end,
     init = function() end,
   },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    ft = { "markdown", "codecompanion" }
+  },
 }
