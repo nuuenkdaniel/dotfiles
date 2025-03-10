@@ -9,8 +9,10 @@ vim.keymap.set('n', '<C-k>', vim.lsp.buf.hover, {})
 vim.keymap.set({ 'n', 'v' }, '<C-a>', vim.lsp.buf.code_action, {})
 
 -- Ollama keybinds
-vim.keymap.set({ 'n', 'v' }, '<leader>oo', ":<c-u>lua require('ollama').prompt()<cr>", {})
-vim.keymap.set({ 'n', 'v' }, "<leader>og", ":<c-u>lua require('ollama').prompt('Generate_Code')<cr>", {})
+vim.keymap.set({ 'n', 'v' }, "<leader>oo", ":CodeCompanionChat toggle right<cr>", {})
+vim.keymap.set({ 'n', 'v' }, "<leader>oc", ":CodeCompanion<cr>", {})
+vim.keymap.set({ 'n', 'v' }, "<leader>oe", ":CodeCompanion /explain<cr>", {})
+vim.keymap.set({ 'n', 'v' }, "<leader>of", ":CodeCompanion /fix<cr>", {})
 
 -- Tab keybinds
 vim.keymap.set('n', "<A-h>", ":BufferPrevious<cr>", {})

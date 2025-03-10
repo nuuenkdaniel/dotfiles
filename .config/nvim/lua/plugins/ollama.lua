@@ -1,22 +1,43 @@
 return {
-  "nomnivore/ollama.nvim",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-  },
-
-  -- All the user commands added by the plugin
-  cmd = { "Ollama", "OllamaModel", "OllamaServe", "OllamaServeStop" },
-
-  opts = {
-    model = "gemma2:27b",
-    url = "http://100.120.7.18:11434",
-    serve = {
-      on_start = false,
-      command = "ollama",
-      args = { "serve" },
-      stop_command = "pkill",
-      stop_args = { "-SIGTERM", "ollama" },
+  {
+    "olimorris/codecompanion.nvim",
+    lazy = false,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "hrsh7th/nvim-cmp",
+      "nvim-telescope/telescope.nvim",
     },
-    -- prompts = { }
-  }
+    config = function()
+      require("codecompanion").setup({
+        adapters = {
+          gemma2 = function()
+            return require("codecompanion.adapters").extend("ollama", {
+              name = "gemma2",
+              env = { url = "http://100.120.7.18:11434" },
+              schema = {
+                model = { default = "gemma2:27b" },
+                num_ctx = { default = 4096 },
+                num_predict = { default = -1 },
+              },
+            })
+          end,
+        },
+        strategies = {
+          chat = { adapter = "gemma2" },
+          inline = { adapter = "gemma2" },
+          agent = { adapter = "gemma2" },
+        },
+        display = {
+          chat = {
+            window = {
+              layout = "vertical",
+              position = "right"
+            }
+          },
+        },
+      })
+    end,
+    init = function() end,
+  },
 }
