@@ -37,6 +37,9 @@ return {
       lspconfig.clangd.setup({
         capabilities = capabilities,
       })
+      lspconfig.ocamllsp.setup({
+        capabilities = capabilities,
+      })
       end,
   },
 }
