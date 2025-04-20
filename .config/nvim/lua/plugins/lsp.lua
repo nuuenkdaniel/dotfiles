@@ -37,6 +37,9 @@ return {
       lspconfig.clangd.setup({
         capabilities = capabilities,
       })
+      lspconfig.bash_language_server.setup({
+        capabilities = capabilities,
+      })
     end,
   },
 }
