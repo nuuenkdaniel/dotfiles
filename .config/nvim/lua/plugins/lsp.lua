@@ -17,6 +17,13 @@ return {
     "neovim/nvim-lspconfig",
     config = function()
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      vim.diagnostic.config({
+        virtual_text = true,
+        signs = true,
+        underline = true,
+        update_in_insert = false,
+        severity_sort = true
+      })
 
       local lspconfig = require("lspconfig")
       lspconfig.lua_ls.setup({
@@ -37,7 +44,7 @@ return {
       lspconfig.clangd.setup({
         capabilities = capabilities,
       })
-      lspconfig.bash_language_server.setup({
+      lspconfig.bashls.setup({
         capabilities = capabilities,
       })
     end,

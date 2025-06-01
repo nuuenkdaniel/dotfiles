@@ -1,4 +1,30 @@
 #!/usr/bin/env bash
 
+
+help() {
+  echo "Usage: screenshot [-s]"
+  echo ""
+  echo "Options:"
+  echo "  -h, --help    Display this message"
+  echo "  -s, --slurp  Take manual cut"
+}
+
+if [[ -n "$2" ]]; then
+  help
+  exit 1
+fi
+if [[ -n "$1" ]]; then
+  if [[ "$1" == "-s" || "$1" == "--slurp" ]]; then
+    grim -g "$(slurp)" - | wl-copy
+    exit 0
+  elif [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    help
+    exit 0
+  else
+    help
+    exit 1
+  fi
+fi
 grim ~/Pictures/Screenshots/$(date '+%y%m%d_%H-%M-%S').png
 notify-send Screenshot "Saved to Screenshot folder"
+exit 0

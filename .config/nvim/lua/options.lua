@@ -4,3 +4,5 @@ vim.cmd("set smartindent")
 vim.cmd("set expandtab")
 vim.cmd("set shiftwidth=2")
 vim.g.mapleader = " "
+
+vim.opt.virtualedit = "block"

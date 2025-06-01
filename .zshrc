@@ -1,18 +1,14 @@
-export TERM=xterm
-
-# Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=500
 bindkey -e
-# End of lines configured by zsh-newuser-install
-# The following lines were added by compinstall
 zstyle :compinstall filename '$HOME/.zshrc'
 
 # Alias
 alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias ls="eza"
-# alias syncDrive="rclone copy -L $HOME/OneDrive OneDrive:CaptNuu"
+alias javac8="/usr/lib/jvm/java-8-openjdk/bin/javac"
+alias java8="/usr/lib/jvm/java-8-openjdk/bin/java"
 
 autoload -Uz compinit
 compinit
@@ -26,10 +22,8 @@ compinit
 zstyle :compinstall filename '${HOME}/.zshrc'
 compdef dotfiles=git
 
-#- buggy
 zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
 zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
-#-/buggy
 
 zstyle ':completion:*:pacman:*' force-list always
 zstyle ':completion:*:*:pacman:*' menu yes select
