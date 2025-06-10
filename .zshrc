@@ -6,6 +6,7 @@ zstyle :compinstall filename '$HOME/.zshrc'
 
 # Alias
 alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+alias dotfiles-private="git --git-dir=$HOME/.dotfiles-private/ --work-tree=/"
 alias ls="eza"
 alias javac8="/usr/lib/jvm/java-8-openjdk/bin/javac"
 alias java8="/usr/lib/jvm/java-8-openjdk/bin/java"
@@ -21,6 +22,7 @@ autoload -Uz compinit
 compinit
 zstyle :compinstall filename '${HOME}/.zshrc'
 compdef dotfiles=git
+compdef dotfiles-private=git
 
 zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
 zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
@@ -66,12 +68,3 @@ fi
 
 PROMPT='$(check_git_status)${vcs_info_msg_0_}${p_host}%F{cyan}[%~]%f '
 neofetch
-
-
-# BEGIN opam configuration
-# This is useful if you're using opam as it adds:
-#   - the correct directories to the PATH
-#   - auto-completion for the opam binary
-# This section can be safely removed at any time if needed.
-[[ ! -r '/home/Danuu/.opam/opam-init/init.zsh' ]] || source '/home/Danuu/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
-# END opam configuration
