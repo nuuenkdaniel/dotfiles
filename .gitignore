@@ -12,8 +12,7 @@
 !/.local
 !/.local/bin
 !/.local/bin/*
-/.local/bin/ssh_start
-/.local/bin/git-submit
+/.local/bin/CurseForge*
 !/.local/share
 !/.local/share/applications
 !/.local/share/applications/code-oss-url-handler.desktop
@@ -46,6 +45,8 @@
 !/.config/kdeglobals
 !/.config/ags
 !/.config/ags/**
+!/.config/yt-dlp
+!/.config/yt-dlp/**
 
 !/.system-scripts
 !/.system-scripts/*

@@ -1,0 +1,1 @@
+-x --embed-metadata --embed-thumbnail -o ~/Shares/TrueNAS/PlexMedia/Music/%(title)s.%(ext)s
