@@ -21,7 +21,7 @@
       "exec": "~/.config/waybar/bin/bluetooth-button-init.sh",
       "on-click": "~/.config/waybar/bin/bluetooth-button.sh",
       "format": "{}",
-      "interval": 1
+      "interval": 2
     },
     "clock": {
       "timezone": "America/New_York",
