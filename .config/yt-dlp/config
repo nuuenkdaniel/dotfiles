@@ -1,1 +1,1 @@
--x --embed-metadata --embed-thumbnail -o ~/Shares/TrueNAS/PlexMedia/Music/%(title)s.%(ext)s
+-x --embed-metadata --embed-thumbnail --cookies-from-browser firefox -o ~/Shares/TrueNAS/PlexMedia/Music/%(title)s.%(ext)s
