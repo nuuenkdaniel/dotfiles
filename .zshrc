@@ -14,6 +14,8 @@ alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias ls="exa"
 alias neofetch2="neofetch --ascii ~/.config/neofetch/ascii-art.txt --set-color 6"
 alias syncPC="syncthing --no-browser"
+alias cat="bat"
+alias b="bigsay"
 
 # ------------------------------------------
 # Comp

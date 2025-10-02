@@ -47,6 +47,35 @@ return {
       lspconfig.ocamllsp.setup({
         capabilities = capabilities,
       })
-      end,
+      lspconfig.rust_analyzer.setup({
+        settings = {
+          ["rust-analyzer"] = {
+            cargo = {
+              features = "all",
+              buildScripts = {
+                enable = true,
+              },
+            },
+            inlayHints = {
+              typeHints = true,
+              parameterHints = true,
+              chainingHints = true,
+            },
+            checkOnSave = true,
+            -- checkOnSave = {
+            --     features = "all",
+            --     command = "clippy",
+            --     extraArgs = { "--no-deps" },
+            -- },
+            procMacro = {
+              enable = true
+            },
+            rustfmt = {
+              rangeFormatting = { enable = true },
+            },
+          }
+        }
+      })
+    end,
   },
 }

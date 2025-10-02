@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 import os
 import argparse
+import subprocess
 
 def convert2PDF(file, out_path):
     file_name, file_ext = os.path.splitext(file)
@@ -23,6 +24,24 @@ def convert2PDF(file, out_path):
             for line in txt_file:
                 pdf.cell(200,10,txt=line,ln=1,align="L")
             pdf.output(out_path)
+    elif file_ext == ".tex":
+        try: 
+            process = subprocess.Popen(["pdflatex", file], stdin=subprocess.PIPE)
+            result = process.communicate(input=b"\n")#, capture_output=True, text=True, check=True)
+            # Clean up
+            for ext in [".aux", ".log", ".out"]:
+                full_path_clean = file_name+ext
+                if os.path.exists(full_path_clean):
+                    os.remove(full_path_clean)
+        except subprocess.CalledProcessError as e:
+            print(f"Conversion of {file} failed")
+            print("STDOUT:", e.stdout)
+            print("STDERR:", e.stderr)
+            print(f"Return Code: {e.returncode}")
+        except FileNotFoundError:
+            print("Conversion of {file} failed")
+            print("Please have pdflatex installed")
+
     else:
         raise ValueError(f"Unsupported extension: {file_ext}")
 
