@@ -10,6 +10,7 @@ return {
     config = function()
       require("mason-lspconfig").setup({
         auto_install = true,
+        automatic_enable = false,
       })
     end,
   },
@@ -26,16 +27,10 @@ return {
       })
 
       local lspconfig = require("lspconfig")
+      lspconfig.pyright.setup({
+        capabilities = capabilities
+      })
       lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-      })
-      lspconfig.jdtls.setup({
-        capabilities = capabilities,
-      })
-      lspconfig.quick_lint_js.setup({
-        capabilities = capabilities,
-      })
-      lspconfig.jedi_language_server.setup({
         capabilities = capabilities,
       })
       lspconfig.html.setup({
@@ -49,6 +44,35 @@ return {
       })
       lspconfig.texlab.setup({
         capabilities = capabilities,
+      })
+      lspconfig.rust_analyzer.setup({
+        settings = {
+          ["rust-analyzer"] = {
+            cargo = {
+              features = "all",
+              buildScripts = {
+                enable = true,
+              },
+            },
+            inlayHints = {
+              typeHints = true,
+              parameterHints = true,
+              chainingHints = true,
+            },
+            checkOnSave = false,
+            -- checkOnSave = {
+            --     features = "all",
+              -- command = "clippy",
+            --     extraArgs = { "--no-deps" },
+            -- },
+            procMacro = {
+              enable = true
+            },
+            rustfmt = {
+              rangeFormatting = { enable = true },
+            },
+          }
+        }
       })
     end,
   },
