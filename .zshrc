@@ -8,7 +8,6 @@ zstyle :compinstall filename '$HOME/.zshrc'
 alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias dotfiles-private="git --git-dir=$HOME/.dotfiles-private/ --work-tree=/"
 alias ls="eza"
-alias dup="kitty & disown"
 alias cat="bat"
 
 autoload -Uz compinit

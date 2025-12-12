@@ -1,0 +1,64 @@
+#!/bin/bash
+
+help() {
+  cat <<EOF
+  Usage: up [-h] [-c] [-p] [-s]
+
+  Options:
+  -h, --help    Show this help message and exit
+  -p            Run paru
+  -c            Clean downloads folder
+  -s            Sync files to OneDrive
+EOF
+}
+
+run_update=false
+run_clear=false
+run_sync=false
+
+if [[ $# -eq 0 ]]; then
+  run_update=true
+  run_clear=true
+  run_sync=true
+else
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help)
+        help
+        exit 0
+        ;;
+      -p)
+        run_update=true
+        ;;
+      -c)
+        run_clear=true
+        ;;
+      -s)
+        run_sync=true
+        ;;
+      --)
+        shift
+        break
+        ;;
+      *)
+        echo "Unknown option: $1" >&2
+        usage
+        exit 1
+        ;;
+    esac
+    shift
+  done
+fi
+
+if $run_update; then
+  paru
+fi
+
+if $run_clear; then
+  clear_downloads
+fi
+
+if $run_sync; then
+  sync_drive > /var/log/sync_drive.log 2>&1
+  echo "Synced Files to OneDrive"
+fi

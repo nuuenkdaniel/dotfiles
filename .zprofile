@@ -9,10 +9,7 @@ if [[ -n "$SSH_CLIENT" ]]; then
 	echo "In SSH Session, WM's will not run"
 else
   openrgb --profile "Normal" > /dev/null & 
-  if [[ "$(tty)" == "/dev/tty3" ]]; then
-	  exec startx
-  elif [[ "$(tty)" == "/dev/tty2" ]]; then
-    # openrgb --profile "Night" & WLR_BACKENDS=headless,libinput sway
+  if [[ "$(tty)" == "/dev/tty2" ]]; then
     exec Hyprland -c .config/hypr/hyprland-sunshine.conf
   elif [[ "$(tty)" == "/dev/tty1" ]]; then
 	  exec Hyprland

@@ -9,8 +9,15 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        auto_install = true,
-        automatic_enable = false,
+        ensure_installed = {
+          "pyright",
+          "html",
+          "clangd",
+          "bashls",
+          "texlab",
+          "rust_analyzer",
+        },
+        automatic_enable = true,
       })
     end,
   },
@@ -26,26 +33,26 @@ return {
         severity_sort = true
       })
 
-      local lspconfig = require("lspconfig")
-      lspconfig.pyright.setup({
+      -- local lspconfig = require("lspconfig")
+      vim.lsp.config("pyright", {
         capabilities = capabilities
       })
-      lspconfig.lua_ls.setup({
+      vim.lsp.config("lua_ls", {
         capabilities = capabilities,
       })
-      lspconfig.html.setup({
+      vim.lsp.config("html", {
         capabilities = capabilities,
       })
-      lspconfig.clangd.setup({
+      vim.lsp.config("clangd", {
         capabilities = capabilities,
       })
-      lspconfig.bashls.setup({
+      vim.lsp.config("bashls", {
         capabilities = capabilities,
       })
-      lspconfig.texlab.setup({
+      vim.lsp.config("texlab", {
         capabilities = capabilities,
       })
-      lspconfig.rust_analyzer.setup({
+      vim.lsp.config("rust_analyzer", {
         settings = {
           ["rust-analyzer"] = {
             cargo = {
@@ -62,7 +69,7 @@ return {
             checkOnSave = false,
             -- checkOnSave = {
             --     features = "all",
-              -- command = "clippy",
+            -- command = "clippy",
             --     extraArgs = { "--no-deps" },
             -- },
             procMacro = {
@@ -74,6 +81,7 @@ return {
           }
         }
       })
+      vim.lsp.enable("lua_ls")
     end,
   },
 }

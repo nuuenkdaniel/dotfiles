@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 currentDevice=$(pactl get-default-sink)
 headphone=$(pactl list short | awk '{print $2}' | grep "^alsa_output\.usb-Logitech_PRO_X.*\.analog-stereo$")

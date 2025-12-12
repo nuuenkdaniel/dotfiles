@@ -1,5 +1,3 @@
 #!/usr/bin/env bash
 
 rclone --verbose copy -L $HOME/OneDrive OneDrive:CaptNuu
-
-echo "Drive synced"
