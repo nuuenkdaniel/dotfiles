@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 if [[ -n "$SSH_CLIENT" ]]; then
 	echo "In SSH Session, WM's will not run"
 elif [[ "$(tty)" == "/dev/tty3" ]]; then

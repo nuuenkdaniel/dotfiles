@@ -9,7 +9,17 @@ return {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        auto_install = true,
+        ensure_installed = {
+          "ts_ls",
+          "pyright",
+          "html",
+          "clangd",
+          "bashls",
+          "texlab",
+          "rust_analyzer",
+          "tailwindcss",
+        },
+        automatic_enable = true,
       })
     end,
   },
@@ -25,29 +35,29 @@ return {
         severity_sort = true
       })
 
-      local lspconfig = require("lspconfig")
-      lspconfig.lua_ls.setup({
+      -- local lspconfig = require("lspconfig")
+      vim.lsp.config("ts_ls", {
+        capabilities = capabilities
+      })
+      vim.lsp.config("pyright", {
+        capabilities = capabilities
+      })
+      vim.lsp.config("lua_ls", {
         capabilities = capabilities,
       })
-      lspconfig.jdtls.setup({
+      vim.lsp.config("html", {
         capabilities = capabilities,
       })
-      lspconfig.quick_lint_js.setup({
+      vim.lsp.config("clangd", {
         capabilities = capabilities,
       })
-      lspconfig.jedi_language_server.setup({
+      vim.lsp.config("bashls", {
         capabilities = capabilities,
       })
-      lspconfig.html.setup({
+      vim.lsp.config("texlab", {
         capabilities = capabilities,
       })
-      lspconfig.clangd.setup({
-        capabilities = capabilities,
-      })
-      lspconfig.ocamllsp.setup({
-        capabilities = capabilities,
-      })
-      lspconfig.rust_analyzer.setup({
+      vim.lsp.config("rust_analyzer", {
         settings = {
           ["rust-analyzer"] = {
             cargo = {
@@ -61,10 +71,10 @@ return {
               parameterHints = true,
               chainingHints = true,
             },
-            checkOnSave = true,
+            checkOnSave = false,
             -- checkOnSave = {
             --     features = "all",
-            --     command = "clippy",
+            -- command = "clippy",
             --     extraArgs = { "--no-deps" },
             -- },
             procMacro = {
@@ -76,6 +86,21 @@ return {
           }
         }
       })
+      vim.lsp.config("tailwindcss", {
+        capabilities = capabilities,
+        settings = {
+          tailwindCSS = {
+            experimental = {
+              classRegex = {
+                { "cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+                { "cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+              },
+            },
+          },
+        },
+      })
+      vim.lsp.enable("lua_ls")
     end,
   },
 }
+
