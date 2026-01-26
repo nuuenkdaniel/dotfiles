@@ -14,6 +14,7 @@ alias neofetch2="neofetch --ascii ~/.config/neofetch/ascii-art.txt --set-color 6
 alias syncPC="syncthing --no-browser"
 alias cat="bat"
 alias b="bigsay"
+alias dup="kitty @ launch --type=os-window --cwd=current"
 
 # ------------------------------------------
 # Comp
@@ -48,6 +49,9 @@ zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' check-for-staged-changes true
 zstyle ':vcs_info:git*' formats '%F{green}[%b]%f'
 
+function send_yt() {
+    ssh -x pc "nohup yt-dlp \"$1\" > /dev/null 2>&1 &"
+}
 
 function check_git_status() {
   git_status=$(git status --porcelain 2> /dev/null | tail -n1)
@@ -69,7 +73,6 @@ function precmd() {
   vcs_info
   print -Pn "\e]133;A\e\\" # Prompt Jumping
 }
-
 
 setopt prompt_subst
 
