@@ -10,9 +10,9 @@ if [[ -n "$SSH_CLIENT" ]]; then
 else
   openrgb --profile "Normal" > /dev/null & 
   if [[ "$(tty)" == "/dev/tty2" ]]; then
-    exec Hyprland -c .config/hypr/hyprland-sunshine.conf
+    exec start-hyprland -c .config/hypr/hyprland-sunshine.conf
   elif [[ "$(tty)" == "/dev/tty1" ]]; then
-	  exec Hyprland
+	  exec start-hyprland
   else
 	  echo "In $(tty), WM's will not start on launch"
   fi

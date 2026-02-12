@@ -50,6 +50,12 @@ else
   done
 fi
 
+if $run_sync; then
+  echo "Syncing Files to OneDrive..."
+  sync_drive > /var/log/sync_drive.log 2>&1
+  echo "Synced Files to OneDrive"
+fi
+
 if $run_update; then
   paru
 fi
@@ -58,7 +64,3 @@ if $run_clear; then
   clear_downloads
 fi
 
-if $run_sync; then
-  sync_drive > /var/log/sync_drive.log 2>&1
-  echo "Synced Files to OneDrive"
-fi

@@ -10,15 +10,14 @@ alias dotfiles-private="git --git-dir=$HOME/.dotfiles-private/ --work-tree=/"
 alias ls="eza"
 alias cat="bat"
 
-autoload -Uz compinit
-compinit
-
 # ------------------------------------------
 # Comp
 # ------------------------------------------
 zmodload zsh/complist 
 autoload -Uz compinit
 compinit
+
+compdef _paru paru
 zstyle :compinstall filename '${HOME}/.zshrc'
 compdef dotfiles=git
 compdef dotfiles-private=git
@@ -66,4 +65,22 @@ if [[ -n "$SSH_CLIENT"  ||  -n "$SSH2_CLIENT" ]]; then
 fi
 
 PROMPT='$(check_git_status)${vcs_info_msg_0_}${p_host}%F{cyan}[%~]%f '
-neofetch
+fastfetch
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+function conda_init() {
+  __conda_setup="$('/home/Danuu/.miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+  if [ $? -eq 0 ]; then
+      eval "$__conda_setup"
+  else
+      if [ -f "/home/Danuu/.miniconda3/etc/profile.d/conda.sh" ]; then
+          . "/home/Danuu/.miniconda3/etc/profile.d/conda.sh"
+      else
+          export PATH="/home/Danuu/.miniconda3/bin:$PATH"
+      fi
+  fi
+  unset __conda_setup
+}
+# <<< conda initialize <<<
+
