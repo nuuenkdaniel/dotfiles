@@ -1,12 +1,13 @@
 # QT exports
-export QT_QPA_PLATFORMTHEME="qt5ct"
-export QT_QSTYLE_OVERIDE="qt5ct"
+# export QT_QPA_PLATFORMTHEME="qt6ct"
+# export QT_QSTYLE_OVERIDE="qt5ct"
 
 export PATH="${PATH}:${HOME}/.local/bin"
 export EDITOR="nvim"
 export TERM=xterm
 export MANPAGER="nvim +Man!"
 export BAT_THEME="ansi"
+export OLLAMA_HOST="100.121.133.88"
 
 # Maven exports
 export MAVEN_OPTS="--enable-native-access=ALL-UNNAMED --sun-misc-unsafe-memory-access=allow"

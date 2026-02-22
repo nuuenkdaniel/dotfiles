@@ -1,4 +1,4 @@
 #!/bin/bash
 
 find "$HOME/Downloads" -type f -mtime +30 -exec rm {} \;
-notify-send "Downloads folder cleaned"
+echo "Downloads folder cleared"

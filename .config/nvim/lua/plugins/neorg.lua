@@ -5,7 +5,12 @@ return {
   },
   {
     "nvim-neorg/neorg",
-    dependencies = { "luarocks.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-neorg/lua-utils.nvim",
+      "pysan3/pathlib.nvim",
+      "nvim-neotest/nvim-nio",
+    },
     version = "*",
     config = function()
       require("neorg").setup {
