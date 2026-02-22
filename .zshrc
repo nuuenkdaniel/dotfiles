@@ -9,6 +9,9 @@ alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias dotfiles-private="git --git-dir=$HOME/.dotfiles-private/ --work-tree=/"
 alias ls="eza"
 alias cat="bat"
+alias b="bigsay"
+alias dup="kitty @ launch --type=os-window --cwd=current"
+alias sl="ls"
 
 # ------------------------------------------
 # Comp
