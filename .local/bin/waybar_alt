@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DIR="$HOME/.config/waybar"
+CONFIG1="$DIR/config"
+STYLE1="$DIR/style.css"
+CONFIG2="$DIR/config-alt"
+STYLE2="$DIR/style-alt.css"
+
+if pgrep -f "waybar -c $CONFIG2" > /dev/null; then
+    killall waybar
+    waybar -c "$CONFIG1" -s "$STYLE1" &
+else
+    killall waybar
+    waybar -c "$CONFIG2" -s "$STYLE2" &
+fi

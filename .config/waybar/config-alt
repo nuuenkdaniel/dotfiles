@@ -1,0 +1,15 @@
+{
+  "layer": "top", 
+    "height": 7,
+    "spacing": 0,
+    "modules-left": ["sway/workspaces", "hyprland/workspaces"],
+    // Modules configuration
+    "hyprland/workspaces": {
+      "disable-scroll": true,
+      "all-outputs": true,
+      "format": "{icon}",
+      "format-icons": {
+          "default": " "
+      }
+    },
+}

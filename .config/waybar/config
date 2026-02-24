@@ -1,6 +1,7 @@
 {
   "layer": "top", 
-    "height": 50,
+    "height": 16,
+    "margin-top": 0,
     "modules-center": ["sway/workspaces", "hyprland/workspaces", "network", "pulseaudio", "custom/mouse-bat", "custom/date", "clock"],
     "modules-right": ["tray"],
     // Modules configuration
