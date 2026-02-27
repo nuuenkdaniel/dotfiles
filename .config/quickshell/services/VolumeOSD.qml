@@ -1,16 +1,40 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Controls
 
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
+import Quickshell.Services.Pipewire
 
 Item {
   id: root
 
   property bool visibleState: false
-  property real volume: 0.0
-  property bool muted: false
+  property real volume: Pipewire.defaultAudioSink?.audio?.volume ?? 0
+  property bool muted: Pipewire.defaultAudioSink?.audio?.muted ?? false
+
+  PwObjectTracker {
+    objects: [Pipewire.defaultAudioSink]
+  }
+
+  Timer {
+    id: hideTimer
+    interval: 2000
+    onTriggered: root.visibleState = false
+  }
+
+  Connections {
+    target: Pipewire.defaultAudioSink?.audio || null
+    function onVolumeChanged() {
+      root.visibleState = true
+      hideTimer.restart()
+    }
+    function onMutedChanged() {
+      root.visibleState = true
+      hideTimer.restart()
+    }
+  }
 
   Variants {
     model: Quickshell.screens
