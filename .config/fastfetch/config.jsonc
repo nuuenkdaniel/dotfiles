@@ -1,0 +1,30 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+  "modules": [
+    "title",
+    "separator",
+    "os",
+    "host",
+    "kernel",
+    "uptime",
+    "packages",
+    "de",
+    "cpu",
+    "gpu",
+    "memory",
+    "swap",
+    "localip",
+    "colors"
+  ],
+  "logo": {
+    "source": "/home/Danuu/Pictures/Wallpapers/hutao.png",
+    "type": "kitty",
+    "height": 12,
+    "width": 25,
+    "padding": {
+      "top": 1,
+      "left": 2
+    },
+    "preserveAspectRatio": true
+  }
+}

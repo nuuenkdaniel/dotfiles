@@ -1,8 +1,9 @@
 import QtQuick
 import Quickshell
 
-import "./widgets"
-import "./services"
+import qs.widgets
+import qs.services
+import qs.modules.osd
 
 Scope {
   id: root

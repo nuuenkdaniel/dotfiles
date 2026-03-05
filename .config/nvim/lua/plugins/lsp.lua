@@ -15,6 +15,7 @@ return {
           "clangd",
           "bashls",
           "texlab",
+          "qmlls",
           "rust_analyzer",
         },
         automatic_enable = true,
@@ -64,6 +65,9 @@ return {
         capabilities = capabilities,
       })
       vim.lsp.config("texlab", {
+        capabilities = capabilities,
+      })
+      vim.lsp.config("qmlls", {
         capabilities = capabilities,
       })
       vim.lsp.config("rust_analyzer", {

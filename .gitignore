@@ -49,6 +49,8 @@
 !/.config/yt-dlp/**
 !/.config/quickshell
 !/.config/quickshell/**
+!/.config/fastfetch
+!/.config/fastfetch/**
 
 !/.system-scripts
 !/.system-scripts/*
