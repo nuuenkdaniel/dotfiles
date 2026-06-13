@@ -10,11 +10,13 @@ zstyle :compinstall filename '/home/Danuu/.zshrc'
 # Alias
 alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias ls="exa"
-alias neofetch2="neofetch --ascii ~/.config/neofetch/ascii-art.txt --set-color 6"
+alias neofetch="fastfetch"
 alias syncPC="syncthing --no-browser"
 alias cat="bat"
 alias b="bigsay"
 alias dup="kitty @ launch --type=os-window --cwd=current"
+alias sl="ls"
+alias hermes="ssh hermes"
 
 # ------------------------------------------
 # Comp
@@ -77,3 +79,20 @@ function precmd() {
 setopt prompt_subst
 
 PROMPT='$(check_git_status)${vcs_info_msg_0_}$(check_ssh)%F{cyan}[%~]%f '
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+function conda_init() {
+  __conda_setup="$('/home/Danuu/.miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+  if [ $? -eq 0 ]; then
+      eval "$__conda_setup"
+  else
+      if [ -f "/home/Danuu/.miniconda3/etc/profile.d/conda.sh" ]; then
+          . "/home/Danuu/.miniconda3/etc/profile.d/conda.sh"
+      else
+          export PATH="/home/Danuu/.miniconda3/bin:$PATH"
+      fi
+  fi
+  unset __conda_setup
+}
+# <<< conda initialize <<<

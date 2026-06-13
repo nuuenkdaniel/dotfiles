@@ -1,13 +1,14 @@
-return { 
+return {
   "nvim-treesitter/nvim-treesitter",
+  branch = "main",
+  lazy = false,
   build = ":TSUpdate",
   config = function()
-    local config = require("nvim-treesitter.configs")
-    config.setup({
-      ensure_installed = {"lua", "java", "python", "html"},
-      sync_install = false,
-      highlight = { enable = true },
-      indent = { enable = true },
+    require("nvim-treesitter").setup()
+    require("nvim-treesitter").install({
+      "yaml",
+      "markdown",
+      "markdown_inline",
     })
   end
 }

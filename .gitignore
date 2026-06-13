@@ -40,3 +40,5 @@
 /.config/nvim/lazy-lock.json
 !/.config/i3
 !/.config/i3/**
+!/.config/quickshell
+!/.config/quickshell/**
