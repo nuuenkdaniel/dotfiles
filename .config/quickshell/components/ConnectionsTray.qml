@@ -7,13 +7,18 @@ import Quickshell.Services.Pipewire
 
 Rectangle {
   id: root
+
+  property int compWidth: 0
+  readonly property int fontSize: compWidth/2
+
   Layout.alignment: Qt.AlignHCenter
+  implicitWidth: compWidth
   implicitHeight: infoLayout.implicitHeight + 20
   radius: 20
   color: "#44475A"
 
+  property var allDevices: Networking.devices.values
   property var activeAdapter: {
-    let allDevices = Networking.devices.values;
     for (let i = 0; i < allDevices.length; i++) {
       if (allDevices[i].connected) {
         return allDevices[i];
@@ -21,8 +26,8 @@ Rectangle {
     }
     return null;
   }
-  property bool isWifi: activeAdapter !== null && activeAdapter.type === DeviceType.Wifi
-  property bool isEthernet: activeAdapter !== null && activeAdapter.type === DeviceType.Wired
+  property bool isWifi: activeAdapter? activeAdapter.type === DeviceType.Wifi : false
+  property bool isEthernet: activeAdapter? activeAdapter.type === DeviceType.Wired : false
   property var currentWifi: isWifi ? activeAdapter.activeNetwork : null
   property int wifiSignalPercentage: currentWifi ? currentWifi.signalStrength : 0
   property string networkGlyph: isEthernet? "󰈀" : "󰤯" 
@@ -41,6 +46,8 @@ Rectangle {
 
   onWifiSignalPercentageChanged: updateNetworkVisuals()
   onActiveAdapterChanged: updateNetworkVisuals()
+  onIsWifiChanged: updateNetworkVisuals()
+  onIsEthernetChanged: updateNetworkVisuals()
   function updateNetworkVisuals() {
     if (!activeAdapter) {
       networkGlyph = "󰤯";
@@ -84,25 +91,25 @@ Rectangle {
   ColumnLayout {
     id: infoLayout
     anchors.centerIn: parent
-    spacing: 8
+    spacing: root.compWidth*.133
     Text {
       Layout.alignment: Qt.AlignHCenter
       font.family: "mononoki Nerd Font"
-      font.pixelSize: 20
+      font.pixelSize: root.fontSize
       text: root.networkGlyph
       color: "#f5e0dc"
     }
     Text {
       Layout.alignment: Qt.AlignHCenter
       font.family: "mononoki Nerd Font"
-      font.pixelSize: 20
+      font.pixelSize: root.fontSize
       text: root.blueToothGlyph
       color: "#f5e0dc"
     }
     Text {
       Layout.alignment: Qt.AlignHCenter
       font.family: "mononoki Nerd Font"
-      font.pixelSize: 20
+      font.pixelSize: root.fontSize
       text: root.audioGlyph
       color: "#f5e0dc"
     }

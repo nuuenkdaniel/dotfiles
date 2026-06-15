@@ -115,9 +115,7 @@ ColumnLayout {
     text: root.dayNumber
   }
 
-  Rectangle {
-    implicitHeight: root.spacerHeight
-  }
+  Item { implicitHeight: root.spacerHeight }
 
   Text {
     Layout.alignment: Qt.AlignHCenter
@@ -136,9 +134,7 @@ ColumnLayout {
     text: root.minutes
   }
 
-  Rectangle {
-    implicitHeight: root.spacerHeight
-  }
+  Item { implicitHeight: root.spacerHeight }
 
   Text {
     visible: root.haveMouseBattery

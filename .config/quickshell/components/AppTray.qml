@@ -9,7 +9,7 @@ Rectangle {
   id: root
   
   property int compWidth: 0
-  property int trayRadius: compWidth/2
+  readonly property int trayRadius: compWidth/2
 
   Layout.alignment: Qt.AlignHCenter
   implicitWidth: compWidth

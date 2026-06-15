@@ -8,9 +8,7 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import Quickshell.Widgets
 import Quickshell.Services.Mpris
-import Quickshell.Services.Pipewire
 import "../components"
 
 Item {
@@ -155,22 +153,31 @@ Item {
         anchors.top: true
         margins.top: -180 + (192 * animState.progress) 
 
-        implicitWidth: 520
-        implicitHeight: 180
+        implicitWidth: 520 + 40
+        implicitHeight: 180 + 40
 
-        StyledRectangularShadow {
-          target: background
+        Rectangle {
+          id: shadowCaster
+          anchors.fill: background 
+          radius: root.radius
+          color: "black" 
+
+          layer.enabled: true
+          layer.effect: MultiEffect {
+              shadowEnabled: true
+              shadowColor: Qt.rgba(0, 0, 0, 0.6)
+              shadowBlur: 0.8 
+              shadowHorizontalOffset: 5 
+              shadowVerticalOffset: 5
+          }
         }
 
-        Rectangle { // Background
+        Rectangle {
           id: background
           anchors.fill: parent
-          // anchors.margins: Appearance.sizes.elevationMargin
-          anchors.margins: 0
+          anchors.margins: 20
           color: ColorUtils.applyAlpha(blendedColors.colLayer0, 1)
           radius: root.radius
-          border.color: "black" 
-          border.width: 4 
 
           layer.enabled: true
           layer.effect: OpacityMask {
