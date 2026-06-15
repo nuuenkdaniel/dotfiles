@@ -1,3 +1,4 @@
+//@ pragma UseQApplication
 import QtQuick
 import Quickshell
 
@@ -8,6 +9,8 @@ import qs.modules.osd
 Scope {
   id: root
 
+  StatusBar {}
   VolumeOSD {}
   PlayerControls {}
+  // Test {}
 }

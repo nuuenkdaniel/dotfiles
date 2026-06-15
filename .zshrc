@@ -12,6 +12,9 @@ alias cat="bat"
 alias b="bigsay"
 alias dup="kitty @ launch --type=os-window --cwd=current"
 alias sl="ls"
+alias pup="wg-quick up proton"
+alias pdown="wg-quick down proton"
+alias hermes="ssh hermes"
 
 # ------------------------------------------
 # Comp
