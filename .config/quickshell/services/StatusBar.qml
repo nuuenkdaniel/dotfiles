@@ -54,6 +54,8 @@ Item {
         WlrLayershell.namespace: "sidebar"
         color: "transparent"
 
+        mask: Region { item: barBackground }
+
         Rectangle {
           id: barBackground
           width: sidebar.barWidth
