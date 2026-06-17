@@ -106,12 +106,6 @@ Rectangle {
       text: root.blueToothGlyph
       color: "#f5e0dc"
     }
-    Text {
-      Layout.alignment: Qt.AlignHCenter
-      font.family: "mononoki Nerd Font"
-      font.pixelSize: root.fontSize
-      text: root.audioGlyph
-      color: "#f5e0dc"
-    }
+    DynamicAudioIcon { fontSize: root.fontSize }
   }
 }

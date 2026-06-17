@@ -1,11 +1,13 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Widgets
 import Quickshell.Services.Pipewire
+
+import "../components"
 
 Item {
   id: root
@@ -78,9 +80,24 @@ Item {
             anchors.rightMargin: 15
             spacing: 15
 
-            Text {
-              Layout.preferredWidth: 24
-              Layout.preferredHeight: 24
+            // Text {
+            //   Layout.preferredWidth: 24
+            //   Layout.preferredHeight: 24
+            //   Layout.alignment: Qt.AlignVCenter
+            //   Layout.bottomMargin: 1
+            //
+            //   verticalAlignment: Text.AlignVCenter
+            //   horizontalAlignment: Text.AlignHCenter
+            //
+            //   color: "#cdd6f4"
+            //   font.pixelSize: 24
+            //   font.family: "monospace"
+            //
+            //   text: root.muted ? "󰖁" : "󰕾"
+            // }
+            DynamicAudioIcon {
+              Layout.preferredWidth: 30
+              Layout.preferredHeight: 30
               Layout.alignment: Qt.AlignVCenter
               Layout.bottomMargin: 1
 
@@ -88,10 +105,9 @@ Item {
               horizontalAlignment: Text.AlignHCenter
 
               color: "#cdd6f4"
-              font.pixelSize: 24
               font.family: "monospace"
 
-              text: root.muted ? "󰖁" : "󰕾"
+              fontSize: 35
             }
 
             Rectangle {

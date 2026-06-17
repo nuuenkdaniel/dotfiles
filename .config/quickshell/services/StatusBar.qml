@@ -42,7 +42,7 @@ Item {
         readonly property int barWidth: screen.width*.023
         readonly property int shadowRadius: 10
         readonly property int shadowXOffset: 5
-        readonly property int shadowYOffset: 5
+        readonly property int shadowYOffset: 0
         readonly property int spacerHeight: barWidth*.167
 
         margins.left: -sidebar.implicitWidth * (1.0 - animState.progress)
