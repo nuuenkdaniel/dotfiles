@@ -62,16 +62,16 @@ Item {
     implicitHeight: 24
 
     property var iconName
-    colBackground: ColorUtils.transparentize(blendedColors.colSecondaryContainer, 1)
-    colBackgroundHover: blendedColors.colSecondaryContainerHover
-    colRipple: blendedColors.colSecondaryContainerActive
+    colBackground: ColorUtils.transparentize(root.blendedColors.colSecondaryContainer, 1)
+    colBackgroundHover: root.blendedColors.colSecondaryContainerHover
+    colRipple: root.blendedColors.colSecondaryContainerActive
 
     contentItem: MaterialSymbol {
       iconSize: Appearance.font.pixelSize.huge
       fill: 1
       horizontalAlignment: Text.AlignHCenter
-      color: blendedColors.colOnSecondaryContainer
-      text: iconName
+      color: root.blendedColors.colOnSecondaryContainer
+      text: parent.iconName
 
       Behavior on color {
         animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
@@ -126,7 +126,7 @@ Item {
   }
 
   property QtObject blendedColors: AdaptedMaterialScheme {
-    color: artDominantColor
+    color: root.artDominantColor
   }
 
   Variants {
@@ -165,10 +165,10 @@ Item {
           layer.enabled: true
           layer.effect: MultiEffect {
               shadowEnabled: true
-              shadowColor: Qt.rgba(0, 0, 0, 0.6)
-              shadowBlur: 0.8 
-              shadowHorizontalOffset: 5 
-              shadowVerticalOffset: 5
+              shadowColor: Qt.rgba(0, 0, 0, 0.75)
+              shadowBlur: 1.0 
+              shadowHorizontalOffset: 0
+              shadowVerticalOffset: 0
           }
         }
 
@@ -176,7 +176,7 @@ Item {
           id: background
           anchors.fill: parent
           anchors.margins: 20
-          color: ColorUtils.applyAlpha(blendedColors.colLayer0, 1)
+          color: ColorUtils.applyAlpha(root.blendedColors.colLayer0, 1)
           radius: root.radius
 
           layer.enabled: true
@@ -206,7 +206,7 @@ Item {
 
             Rectangle {
               anchors.fill: parent
-              color: ColorUtils.transparentize(blendedColors.colLayer0, 0.3)
+              color: ColorUtils.transparentize(root.blendedColors.colLayer0, 0.3)
               radius: root.radius
             }
           }
@@ -231,7 +231,7 @@ Item {
               Layout.fillHeight: true
               implicitWidth: height
               radius: Appearance.rounding.verysmall
-              color: ColorUtils.transparentize(blendedColors.colLayer1, 0.5)
+              color: ColorUtils.transparentize(root.blendedColors.colLayer1, 0.5)
 
               layer.enabled: true
               layer.effect: OpacityMask {
@@ -265,7 +265,7 @@ Item {
                 id: trackTitle
                 Layout.fillWidth: true
                 font.pixelSize: Appearance.font.pixelSize.large
-                color: blendedColors.colOnLayer0
+                color: root.blendedColors.colOnLayer0
                 elide: Text.ElideRight
                 text: StringUtils.cleanMusicTitle(root.player?.trackTitle) || "Untitled"
                 animateChange: true
@@ -276,7 +276,7 @@ Item {
                 id: trackArtist
                 Layout.fillWidth: true
                 font.pixelSize: Appearance.font.pixelSize.smaller
-                color: blendedColors.colSubtext
+                color: root.blendedColors.colSubtext
                 elide: Text.ElideRight
                 text: root.player?.trackArtist || ""
                 // text: root.player?.trackArtist
@@ -301,7 +301,7 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.margins: 8
                     font.pixelSize: Appearance.font.pixelSize.small
-                    color: blendedColors.colSubtext
+                    color: root.blendedColors.colSubtext
                     elide: Text.ElideRight
                     text: `${StringUtils.friendlyTimeForSeconds(root.player?.position)} / ${StringUtils.friendlyTimeForSeconds(root.player?.length)}`
                   }
@@ -329,15 +329,15 @@ Item {
                       downAction: () => root.player.togglePlaying();
 
                       buttonRadius: root.player?.isPlaying ? Appearance?.rounding.normal : size / 2
-                      colBackground: root.player?.isPlaying ? blendedColors.colPrimary : blendedColors.colSecondaryContainer
-                      colBackgroundHover: root.player?.isPlaying ? blendedColors.colPrimaryHover : blendedColors.colSecondaryContainerHover
-                      colRipple: root.player?.isPlaying ? blendedColors.colPrimaryActive : blendedColors.colSecondaryContainerActive
+                      colBackground: root.player?.isPlaying ? root.blendedColors.colPrimary : root.blendedColors.colSecondaryContainer
+                      colBackgroundHover: root.player?.isPlaying ? root.blendedColors.colPrimaryHover : root.blendedColors.colSecondaryContainerHover
+                      colRipple: root.player?.isPlaying ? root.blendedColors.colPrimaryActive : root.blendedColors.colSecondaryContainerActive
 
                       contentItem: MaterialSymbol {
                         iconSize: Appearance.font.pixelSize.huge
                         fill: 1
                         horizontalAlignment: Text.AlignHCenter
-                        color: root.player?.isPlaying ? blendedColors.colOnPrimary : blendedColors.colOnSecondaryContainer
+                        color: root.player?.isPlaying ? root.blendedColors.colOnPrimary : root.blendedColors.colOnSecondaryContainer
                         text: root.player?.isPlaying ? "pause" : "play_arrow"
 
                         Behavior on color {
@@ -366,9 +366,9 @@ Item {
                     active: root.player?.canSeek ?? false
                     sourceComponent: StyledSlider { 
                       configuration: StyledSlider.Configuration.Wavy
-                      highlightColor: blendedColors.colPrimary
-                      trackColor: blendedColors.colSecondaryContainer
-                      handleColor: blendedColors.colPrimary
+                      highlightColor: root.blendedColors.colPrimary
+                      trackColor: root.blendedColors.colSecondaryContainer
+                      handleColor: root.blendedColors.colPrimary
                       value: root.player?.position / root.player?.length
                       onMoved: {
                         root.player.position = value * root.player.length;
@@ -386,8 +386,8 @@ Item {
                     active: !(root.player?.canSeek ?? false)
                     sourceComponent: StyledProgressBar { 
                       wavy: root.player?.isPlaying ?? false
-                      highlightColor: blendedColors.colPrimary
-                      trackColor: blendedColors.colSecondaryContainer
+                      highlightColor: root.blendedColors.colPrimary
+                      trackColor: root.blendedColors.colSecondaryContainer
                       value: root.player?.position / root.player?.length
                     }
                   }

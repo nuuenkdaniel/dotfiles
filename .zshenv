@@ -1,5 +1,5 @@
 # QT exports
-# export QT_QPA_PLATFORMTHEME="qt6ct"
+export QT_QPA_PLATFORMTHEME="qt6ct"
 # export QT_QSTYLE_OVERIDE="qt5ct"
 
 export PATH="${PATH}:${HOME}/.local/bin"

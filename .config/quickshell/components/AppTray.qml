@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.SystemTray
+import "../globals"
 
 Rectangle {
   id: root
@@ -17,7 +18,9 @@ Rectangle {
   color: "transparent"
   radius: trayRadius
 
-  AppMenu { id: menu }
+  // AppMenu { id: menu }
+  GlobalMenu { id: menu }
+  signal openMenuRequested(real targetY, var menuData)
 
   ColumnLayout {
     id: trayLayout
@@ -43,9 +46,6 @@ Rectangle {
         radius: trayLayout.itemSize
         color: trayMouse.containsMouse ? "#45475a" : "transparent"
 
-        Behavior on Layout.preferredHeight { 
-          NumberAnimation { duration: 250; easing.type: Easing.OutExpo } 
-        }
         Behavior on color { 
           ColorAnimation { duration: 200 } 
         }
@@ -76,12 +76,22 @@ Rectangle {
           onClicked: (mouse) => {
             if (mouse.button === Qt.RightButton) {
               let pos = delegateRoot.mapToItem(null, 0, 0);
-              menu.targetY = pos.y
-              menu.menuModel = menuOpener.children
-              if (!menu.visible) { menu.visible = true; }
+              GlobalMenuState.targetY = pos.y;
+              if (!GlobalMenuState.isVisible) {
+                Qt.callLater(() => {
+                  GlobalMenuState.menuModel = menuOpener.children;
+                  GlobalMenuState.persist = false;
+                  GlobalMenuState.isVisible = true;
+                });
+              }
+              else {
+                GlobalMenuState.menuModel = menuOpener.children;
+                GlobalMenuState.persist = false;
+                GlobalMenuState.isVisible = true;
+              }
             } else if (mouse.button === Qt.LeftButton) {
               delegateRoot.trayData.activate(0, 0) 
-              menu.visible = false
+              GlobalMenuState.isVisible = false
             }
           }
         }

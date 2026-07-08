@@ -39,7 +39,7 @@ Item {
           }
         }
 
-        readonly property int barWidth: screen.width*.023
+        readonly property int barWidth: Math.max(screen.width*.023, 55)
         readonly property int shadowRadius: 10
         readonly property int shadowXOffset: 5
         readonly property int shadowYOffset: 0
@@ -72,6 +72,8 @@ Item {
               shadowHorizontalOffset: sidebar.shadowXOffset 
               shadowVerticalOffset: sidebar.shadowYOffset
           }
+
+          GlobalMenu {}
 
           ColumnLayout {
             anchors.fill: parent

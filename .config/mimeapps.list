@@ -1,9 +1,9 @@
 [Added Associations]
-application/pdf=microsoft-edge-stable-2.desktop;microsoft-edge.desktop;
-image/jpeg=imv-2.desktop;microsoft-edge-stable-3.desktop;
+application/pdf=firefox.desktop
+image/jpeg=imv-2.desktop;
 text/plain=nvim-qt-4.desktop;nvim-qt-3.desktop;nvim-qt-2.desktop;
 application/x-zerosize=nvim-qt-3.desktop;
-image/png=feh.desktop;
+image/png=imv-2.desktop;imv.desktop;org.xfce.ristretto.desktop;
 
 [Default Applications]
 application/json=nvim-qt-2.desktop
@@ -22,5 +22,5 @@ x-scheme-handler/unknown=firefox.desktop
 x-scheme-handler/discord=discord.desktop
 application/x-zerosize=nvim-qt-3.desktop
 x-scheme-handler/nxm=com.nexusmods.app.desktop
-image/png=feh.desktop
-image/jpg=feh.desktop
+image/png=org.xfce.ristretto.desktop
+image/jpg=imv-2.desktop
