@@ -31,7 +31,7 @@ PanelWindow {
     id: popupMenu
 
     x: GlobalMenuState.isVisible ? root.targetX : root.targetX - 30
-    y: (GlobalMenuState.targetY + popupMenu.implicitHeight) < root.height ? GlobalMenuState.targetY : root.height - popupMenu.implicitHeight
+    y: (GlobalMenuState.targetY-15 + popupMenu.implicitHeight) < root.height ? GlobalMenuState.targetY-15 : root.height - popupMenu.implicitHeight
     color: "#1e1e2e"
     opacity: (menuLayout.implicitHeight > 0 && GlobalMenuState.isVisible) ? 1.0 : 0.0
 
@@ -76,6 +76,7 @@ PanelWindow {
           id: delegateMenu
           required property var modelData
           readonly property bool isSeparator: modelData.isSeparator
+          readonly property bool isHeader: modelData.isHeader || false
 
           Layout.fillWidth: true
           implicitWidth: isSeparator ? 1 : menuText.implicitWidth + 20
@@ -90,21 +91,20 @@ PanelWindow {
             verticalAlignment: Text.AlignVCenter
             visible: !delegateMenu.isSeparator
             text: delegateMenu.modelData.text ? delegateMenu.modelData.text.replace(/&/g, "") : ""
-            color: "#cdd6f4" 
-            font.pixelSize: 12
+            color: delegateMenu.isHeader ? "#e3c947" : "#cdd6f4" 
+            font.pixelSize: delegateMenu.isHeader ? 14 : 12
           }
 
           MouseArea {
             id: itemMouse
             anchors.fill: parent
-            hoverEnabled: !delegateMenu.isSeparator
-            cursorShape: delegateMenu.isSeparator ? Qt.ArrowCursor : Qt.PointingHandCursor
+            enabled: !delegateMenu.isSeparator && !delegateMenu.isHeader
+            hoverEnabled: true
+            cursorShape: delegateMenu.isSeparator || delegateMenu.isHeader ? Qt.ArrowCursor : Qt.PointingHandCursor
 
             onClicked: {
-              if (!delegateMenu.isSeparator) {
-                delegateMenu.modelData.triggered()
-                if (!GlobalMenuState.persist) { GlobalMenuState.isVisible = false; }
-              }
+              delegateMenu.modelData.triggered()
+              if (!GlobalMenuState.persist) { GlobalMenuState.isVisible = false; }
             }
           }
         }

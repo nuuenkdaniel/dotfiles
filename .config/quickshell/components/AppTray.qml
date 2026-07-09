@@ -82,12 +82,14 @@ Rectangle {
                   GlobalMenuState.menuModel = menuOpener.children;
                   GlobalMenuState.persist = false;
                   GlobalMenuState.isVisible = true;
+                  GlobalMenuState.menuType = 0;
                 });
               }
               else {
                 GlobalMenuState.menuModel = menuOpener.children;
                 GlobalMenuState.persist = false;
                 GlobalMenuState.isVisible = true;
+                GlobalMenuState.menuType = 0;
               }
             } else if (mouse.button === Qt.LeftButton) {
               delegateRoot.trayData.activate(0, 0) 
