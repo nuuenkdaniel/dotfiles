@@ -1,113 +1,143 @@
 import QtQuick
+import QtQuick.Shapes
+// import Qt5Compat.GraphicalEffects
+import QtQuick.Effects
+import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
+import Quickshell.Hyprland
 
 PanelWindow {
-    id: root
-
-    // Anchor to the top edge, stretching across the screen
-    anchors {
-        top: true
-        left: true
-        right: true
-    }
-    
-    // Set the height of your bar
-    height: 40
-    color: "transparent"
-    
-    // Start completely unmapped/hidden
+    id: dashboardWindow
     visible: false
 
-    // The IPC trigger for your compositor
-    IpcHandler {
-        target: "sliding_bar"
-        function toggle() {
-            if (innerBar.state === "closed") {
-                // Instantly show the transparent window wrapper
-                root.visible = true 
-                // Trigger the slide down animation
-                innerBar.state = "open" 
-            } else {
-                // Trigger the slide up animation (visibility is handled in the Transition)
-                innerBar.state = "closed" 
-            }
-        }
+    anchors {
+        top: true
     }
 
-    // The actual visible background of your bar
-    Rectangle {
-        id: innerBar
+    color: "transparent"
+    exclusionMode: ExclusionMode.Ignore
+    WlrLayershell.layer: WlrLayer.Overlay
+
+    // 1. Define your widget's actual visible size
+    property int widgetWidth: 600
+    property int widgetHeight: 400
+    property int cornerRadius: 35
+    
+    // 2. Define your shadow properties
+    property int shadowRadius: 20
+    property int shadowOffset: 5
+
+    // 3. Size the Wayland window to fit the widget PLUS the shadow padding
+    // We don't pad the top because we want the widget flush with the screen edge
+    implicitWidth: widgetWidth + (shadowRadius * 2)
+    implicitHeight: widgetHeight + shadowRadius + shadowOffset
+
+    Item {
+        id: slideContainer
         width: parent.width
         height: parent.height
-        color: "#1e1e2e" 
-        
-        // Default to the closed state
-        state: "closed"
 
-        // --- THE STATES ---
-        states: [
-            State {
-                name: "open"
-                // Flush with the top of the window
-                PropertyChanges { target: innerBar; y: 0 } 
-            },
-            State {
-                name: "closed"
-                // Moved completely off-screen (negative Y)
-                PropertyChanges { target: innerBar; y: -innerBar.height } 
-            }
-        ]
-
-        // --- THE ANIMATIONS ---
-        transitions: [
-            // Animation for Sliding In
-            Transition {
-                from: "closed"; to: "open"
-                NumberAnimation { 
-                    target: innerBar
-                    property: "y"
-                    duration: 350 
-                    easing.type: Easing.OutExpo // Fast entrance, smooth deceleration
-                }
-            },
+        // --- The actual visible widget bounds ---
+        Item {
+            id: mainWidgetArea
+            width: dashboardWindow.widgetWidth
+            height: dashboardWindow.widgetHeight
             
-            // Animation for Sliding Out
-            Transition {
-                from: "open"; to: "closed"
-                SequentialAnimation {
-                    NumberAnimation { 
-                        target: innerBar
-                        property: "y"
-                        duration: 300 
-                        easing.type: Easing.InExpo // Slow start, fast exit
-                    }
-                    // Crucial: Wait for the slide to finish, THEN hide the Wayland window
-                    ScriptAction { 
-                        script: root.visible = false 
-                    }
+            // Keep it pushed flush against the top edge, and centered horizontally
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Shape {
+                id: customBackground
+                anchors.fill: parent
+                
+                layer.enabled: true
+                layer.samples: 4
+                
+                // 4. Apply the DropShadow directly to the Shape's rendering layer
+                // layer.effect: DropShadow {
+                //     transparentBorder: true
+                //     color: Qt.rgba(0, 0, 0, 0.5) // Semi-transparent black
+                //     radius: dashboardWindow.shadowRadius
+                //     samples: dashboardWindow.shadowRadius * 2 + 1 // Rule of thumb: samples should be radius * 2 + 1
+                //     verticalOffset: dashboardWindow.shadowOffset
+                //     horizontalOffset: 0
+                // }
+                layer.effect: MultiEffect {
+                  shadowEnabled: true
+                  shadowColor: Qt.rgba(0, 0, 0, 0.75)
+
+                  // MultiEffect uses a 0.0 to 1.0 scale for blur intensity
+                  // 1.0 is the maximum, which gives that deep, soft look you want!
+                  shadowBlur: 1.0 
+
+                  shadowHorizontalOffset: dashboardWindow.shadowXOffset
+                  shadowVerticalOffset: dashboardWindow.shadowYOffset
                 }
-            }
-        ]
 
-        // --- YOUR BAR CONTENT ---
-        Row {
-            anchors.centerIn: parent
-            spacing: 20
+                ShapePath {
+                  fillColor: "#1e1e2e"
+                  strokeColor: "transparent" // Ensure border is off
 
-            Text {
-                text: "🚀 Sliding Waybar"
-                color: "#cdd6f4"
-                font.bold: true
-                font.pixelSize: 14
+                  PathSvg {
+                    path: {
+                      // Back to the clean math without border offsets!
+                      let r = dashboardWindow.cornerRadius;
+                      let w = mainWidgetArea.width;
+                      let h = mainWidgetArea.height;
+
+                      return "M 0 0 " +                                                        // Start off-screen
+                      "L 0 0 " +
+                      "A " + r + " " + r + " 0 0 1 " + r + " " + r + " " +                // Top-Left Inverted
+                      "L " + r + " " + (h - r) + " " +                                    // Left Edge
+                      "A " + r + " " + r + " 0 0 0 " + (2 * r) + " " + h + " " +          // Bottom-Left Normal
+                      "L " + (w - 2 * r) + " " + h + " " +                                // Bottom Edge
+                      "A " + r + " " + r + " 0 0 0 " + (w - r) + " " + (h - r) + " " +    // Bottom-Right Normal
+                      "L " + (w - r) + " " + r + " " +                                    // Right Edge
+                      "A " + r + " " + r + " 0 0 1 " + w + " 0 " +                        // Top-Right Inverted
+                      "L " + w + " -10 " +                                                // End off-screen
+                      "Z";
+                    }
+                  }
+                }
+              }
+
+              // --- YOUR WIDGET CONTENT GOES HERE ---
+              Item {
+                anchors.fill: parent
+                anchors.leftMargin: dashboardWindow.cornerRadius
+                anchors.rightMargin: dashboardWindow.cornerRadius
+                anchors.topMargin: dashboardWindow.cornerRadius + 10
+                anchors.bottomMargin: dashboardWindow.cornerRadius
+
+                Text {
+                  anchors.top: parent.top
+                  anchors.horizontalCenter: parent.horizontalCenter
+                  text: "Dashboard"
+                  font.pixelSize: 16
+                  font.bold: true
+                  color: "#ffffff" // Changed to white to match your dark theme
+                }
+
+                Row {
+                  anchors.centerIn: parent
+                  spacing: 20
+
+                  Rectangle {
+                    width: 150; height: 150; radius: 15
+                    color: "#ffffff"; opacity: 0.1
+                    Text { anchors.centerIn: parent; text: "Weather"; color: "white" }
+                  }
+                  Rectangle {
+                    width: 150; height: 150; radius: 15
+                    color: "#ffffff"; opacity: 0.1
+                    Text { anchors.centerIn: parent; text: "Media"; color: "white" }
+                  }
+                }
+              }
             }
-            
-            Text {
-                text: Qt.formatDateTime(new Date(), "hh:mm ap")
-                color: "#a6adc8"
-                font.pixelSize: 14
-            }
+          }
         }
-    }
-}

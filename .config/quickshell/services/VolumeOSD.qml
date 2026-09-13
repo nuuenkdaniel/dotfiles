@@ -80,6 +80,21 @@ Item {
             anchors.rightMargin: 15
             spacing: 15
 
+            // Text {
+            //   Layout.preferredWidth: 24
+            //   Layout.preferredHeight: 24
+            //   Layout.alignment: Qt.AlignVCenter
+            //   Layout.bottomMargin: 1
+            //
+            //   verticalAlignment: Text.AlignVCenter
+            //   horizontalAlignment: Text.AlignHCenter
+            //
+            //   color: "#cdd6f4"
+            //   font.pixelSize: 24
+            //   font.family: "monospace"
+            //
+            //   text: root.muted ? "󰖁" : "󰕾"
+            // }
             DynamicAudioIcon {
               Layout.preferredWidth: 30
               Layout.preferredHeight: 30
@@ -92,7 +107,7 @@ Item {
               color: "#cdd6f4"
               font.family: "monospace"
 
-              fontSize: 20
+              fontSize: 25
             }
 
             Rectangle {

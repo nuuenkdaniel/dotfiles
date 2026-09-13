@@ -4,14 +4,12 @@ import Quickshell
 
 import qs.widgets
 import qs.services
-import qs.modules.osd
 
 Scope {
   id: root
 
-  VolumeOSD {}
-  // PlayerControls {}
-  PlayerControls2 {}
   StatusBar {}
-  // Test {}
+  VolumeOSD {}
+  PlayerControls {}
+  // Test48 {}
 }

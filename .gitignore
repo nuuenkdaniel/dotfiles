@@ -17,6 +17,7 @@
 /.local/bin/ssh_remote_connect
 /.local/bin/arduino*
 /.local/bin/vesc
+/.local/bin/python3.11
 !/.local/share
 
 !/.config
