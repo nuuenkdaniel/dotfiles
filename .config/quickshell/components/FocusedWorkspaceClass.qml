@@ -38,6 +38,7 @@ Item {
   onFormattedTextChanged: titleDebounce.restart()
 
   component AppText: Text {
+    textFormat: Text.PlainText
     rotation: -90
     color: "#bac2de"
     font.family: "mononoki Nerd Font"

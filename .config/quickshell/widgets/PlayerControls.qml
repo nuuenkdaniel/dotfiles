@@ -15,6 +15,9 @@ Item {
   id: root
 
   property bool visibleState: false
+  property int presentedWindows: 0
+  readonly property bool presentationActive: visibleState || presentedWindows > 0
+  onPresentationActiveChanged: if (presentationActive) Qt.callLater(root.startArtwork)
 
   IpcHandler {
     target: "player"
@@ -23,21 +26,16 @@ Item {
     }
   }
 
-  Connections {
-    target: MprisController
-    function onActivePlayerChanged() {
-      if (MprisController.activePlayer !== null) {
-        root.player = MprisController.activePlayer;
-      }
-    }
-  }
   property MprisPlayer player: MprisController.activePlayer
   property var artUrl: player?.trackArtUrl || ""
   property string artDownloadLocation: (Directories.coverArt || "")
   property string artFilePath: `${artDownloadLocation}/${artFileName}`
   property string artFileName: Qt.md5(artUrl || "")
-  property color artDominantColor: ColorUtils.mix((colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary), Appearance.colors.colPrimaryContainer, 0.8) || Appearance.m3colors.m3secondaryContainer
+  property color artDominantColor: root.displayedArtFilePath
+    ? ColorUtils.mix((colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary), Appearance.colors.colPrimaryContainer, 0.8)
+    : "#cba6f7"
   property bool downloaded: false
+  property bool artworkPending: false
   property list<real> visualizerPoints: []
   property real maxVisualizerValue: 1000 // Max value in the data points
   property int visualizerSmoothing: 2 // Number of points to average for smoothing
@@ -48,6 +46,7 @@ Item {
   property bool isLocalArt: (root.artUrl || "").startsWith("file://") || (root.artUrl || "").startsWith("/")
   property bool isDataUri: (root.artUrl || "").startsWith("data:")
   property string displayedArtFilePath: {
+    if (!root.presentationActive) return "";
     if (!root.artUrl || root.artUrl === "") {
       return "";
     }
@@ -80,7 +79,7 @@ Item {
   }
 
   Timer {
-    running: (root.player?.playbackState === MprisPlaybackState.Playing) || false
+    running: root.presentationActive && (root.player?.playbackState === MprisPlaybackState.Playing)
     interval: 200
     repeat: true
     onTriggered: {
@@ -88,33 +87,39 @@ Item {
     }
   }
 
-  onArtFilePathChanged: {
-    if ((root.artUrl || "").length === 0) {
-      root.artDominantColor = Appearance.m3colors.m3secondaryContainer
-      return;
-    }
+  onArtFilePathChanged: refreshArtwork()
+  Component.onCompleted: refreshArtwork()
 
-    if (root.isLocalArt || root.isDataUri) {
-      return;
-    }
-    coverArtDownloader.running = false
-
-    coverArtDownloader.targetFile = root.artUrl 
-    coverArtDownloader.artFilePath = root.artFilePath
+  function refreshArtwork() {
     root.downloaded = false
+    root.artworkPending = true
+    // Do not replace an in-flight request's identity before its exit handler.
+    if (coverArtDownloader.running) coverArtDownloader.running = false
+    else Qt.callLater(root.startArtwork)
+  }
+
+  function startArtwork() {
+    if (!root.presentationActive || coverArtDownloader.running || !root.artworkPending) return
+    root.artworkPending = false
+    if (!root.artUrl || root.isLocalArt || root.isDataUri) return
+    coverArtDownloader.targetFile = root.artUrl
+    coverArtDownloader.artFilePath = root.artFilePath
+    coverArtDownloader.command = ["python3", decodeURIComponent(Qt.resolvedUrl("../bin/artwork.py").toString().replace("file://", "")), root.artUrl, root.artFilePath]
     coverArtDownloader.running = true
+  }
+
+  function finishArtwork(exitCode) {
+    root.downloaded = exitCode === 0 && !root.artworkPending
+      && root.artUrl === coverArtDownloader.targetFile
+      && root.artFilePath === coverArtDownloader.artFilePath
+    Qt.callLater(root.startArtwork)
   }
 
   Process {
     id: coverArtDownloader
-    property string targetFile: root.artUrl
-    property string artFilePath: root.artFilePath
-    command: [ "bash", "-c", `[ -f '${artFilePath}' ] || curl -sSL '${targetFile}' -o '${artFilePath}'` ]
-    onExited: (exitCode, exitStatus) => {
-      if (exitCode === 0 && root.artFilePath === artFilePath) {
-        root.downloaded = true
-      }
-    }
+    property string targetFile: ""
+    property string artFilePath: ""
+    onExited: (exitCode, exitStatus) => root.finishArtwork(exitCode)
   }
 
   ColorQuantizer {
@@ -149,6 +154,15 @@ Item {
           }
         }
         visible: root.visibleState || animState.progress > 0
+        property bool countedVisible: false
+        function syncPresentation() {
+          if (countedVisible === visible) return
+          root.presentedWindows += visible ? 1 : -1
+          countedVisible = visible
+        }
+        onVisibleChanged: syncPresentation()
+        Component.onCompleted: syncPresentation()
+        Component.onDestruction: if (countedVisible) root.presentedWindows -= 1
 
         anchors.top: true
         margins.top: -180 + (192 * animState.progress) 
@@ -176,7 +190,9 @@ Item {
           id: background
           anchors.fill: parent
           anchors.margins: 20
-          color: ColorUtils.applyAlpha(root.blendedColors.colLayer0, 1)
+          color: root.player ? ColorUtils.applyAlpha(root.blendedColors.colLayer0, 1) : "#1e1e2e"
+          border.width: root.player ? 0 : 1
+          border.color: "#6b587f"
           radius: root.radius
 
           layer.enabled: true
@@ -231,7 +247,7 @@ Item {
               Layout.fillHeight: true
               implicitWidth: height
               radius: Appearance.rounding.verysmall
-              color: ColorUtils.transparentize(root.blendedColors.colLayer1, 0.5)
+            color: root.displayedArtFilePath ? ColorUtils.transparentize(root.blendedColors.colLayer1, 0.5) : "#313244"
 
               layer.enabled: true
               layer.effect: OpacityMask {
@@ -242,7 +258,16 @@ Item {
                 }
               }
 
-              StyledImage { // Art image
+            MaterialSymbol {
+              anchors.centerIn: parent
+              visible: mediaArt.status !== Image.Ready
+              text: "music_note"
+              iconSize: 56
+              color: "#cba6f7"
+              fill: 1
+            }
+
+            StyledImage { // Art image
                 id: mediaArt
                 property int size: parent.height
                 anchors.fill: parent
@@ -265,9 +290,9 @@ Item {
                 id: trackTitle
                 Layout.fillWidth: true
                 font.pixelSize: Appearance.font.pixelSize.large
-                color: root.blendedColors.colOnLayer0
+                color: root.player ? root.blendedColors.colOnLayer0 : "#cdd6f4"
                 elide: Text.ElideRight
-                text: StringUtils.cleanMusicTitle(root.player?.trackTitle) || "Untitled"
+                text: root.player ? StringUtils.cleanMusicTitle(root.player.trackTitle) || "Untitled" : "Nothing playing"
                 animateChange: true
                 animationDistanceX: 6
                 animationDistanceY: 0
@@ -276,9 +301,9 @@ Item {
                 id: trackArtist
                 Layout.fillWidth: true
                 font.pixelSize: Appearance.font.pixelSize.smaller
-                color: root.blendedColors.colSubtext
+                color: root.player ? root.blendedColors.colSubtext : "#bac2de"
                 elide: Text.ElideRight
-                text: root.player?.trackArtist || ""
+                text: root.player ? root.player.trackArtist || root.player.identity : "Start some music to see it here"
                 // text: root.player?.trackArtist
                 animateChange: true
                 animationDistanceX: 6
@@ -304,6 +329,7 @@ Item {
                     color: root.blendedColors.colSubtext
                     elide: Text.ElideRight
                     text: `${StringUtils.friendlyTimeForSeconds(root.player?.position)} / ${StringUtils.friendlyTimeForSeconds(root.player?.length)}`
+                    visible: !!root.player && root.player.length > 0
                   }
 
                   Row {
@@ -315,6 +341,8 @@ Item {
                     TrackChangeButton {
                       anchors.verticalCenter: parent.verticalCenter
                       iconName: "skip_previous"
+                      enabled: root.player?.canGoPrevious ?? false
+                      opacity: enabled ? 1 : .35
                       downAction: () => root.player?.previous()
                     }
 
@@ -326,7 +354,9 @@ Item {
                       
                       implicitWidth: size
                       implicitHeight: size
-                      downAction: () => root.player.togglePlaying();
+                      enabled: root.player?.canTogglePlaying ?? false
+                      opacity: enabled ? 1 : .45
+                      downAction: () => root.player?.togglePlaying();
 
                       buttonRadius: root.player?.isPlaying ? Appearance?.rounding.normal : size / 2
                       colBackground: root.player?.isPlaying ? root.blendedColors.colPrimary : root.blendedColors.colSecondaryContainer
@@ -349,6 +379,8 @@ Item {
                     TrackChangeButton {
                       anchors.verticalCenter: parent.verticalCenter
                       iconName: "skip_next"
+                      enabled: root.player?.canGoNext ?? false
+                      opacity: enabled ? 1 : .35
                       downAction: () => root.player?.next()
                     }
                   }
@@ -357,6 +389,7 @@ Item {
                 // 2. BOTTOM ROW: The Progress Bar
                 Item {
                   id: progressBarContainer
+                  visible: !!root.player && root.player.length > 0
                   Layout.fillWidth: true
                   implicitHeight: Math.max(sliderLoader.implicitHeight, progressBarLoader.implicitHeight)
 
@@ -366,10 +399,11 @@ Item {
                     active: root.player?.canSeek ?? false
                     sourceComponent: StyledSlider { 
                       configuration: StyledSlider.Configuration.Wavy
+                      animateWave: root.presentationActive && !!root.player?.isPlaying
                       highlightColor: root.blendedColors.colPrimary
                       trackColor: root.blendedColors.colSecondaryContainer
                       handleColor: root.blendedColors.colPrimary
-                      value: root.player?.position / root.player?.length
+                      value: root.player?.length > 0 ? Math.max(0, Math.min(1, root.player.position / root.player.length)) : 0
                       onMoved: {
                         root.player.position = value * root.player.length;
                       }
@@ -386,9 +420,10 @@ Item {
                     active: !(root.player?.canSeek ?? false)
                     sourceComponent: StyledProgressBar { 
                       wavy: root.player?.isPlaying ?? false
+                      animateWave: root.presentationActive && !!root.player?.isPlaying
                       highlightColor: root.blendedColors.colPrimary
                       trackColor: root.blendedColors.colSecondaryContainer
-                      value: root.player?.position / root.player?.length
+                      value: root.player?.length > 0 ? Math.max(0, Math.min(1, root.player.position / root.player.length)) : 0
                     }
                   }
                 }

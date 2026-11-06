@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 import QtQuick
+import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Widgets
@@ -136,7 +137,7 @@ Slider {
                     function onHighlightColorChanged() { wavyFill.requestPaint(); }
                 }
                 FrameAnimation {
-                    running: root.animateWave
+                    running: root.animateWave && root.visible && !!root.Window.window?.visible
                     onTriggered: {
                         wavyFill.requestPaint()
                     }

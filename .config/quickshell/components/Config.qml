@@ -67,11 +67,13 @@ Singleton {
         watchChanges: true
         blockWrites: root.blockWrites
         onFileChanged: fileReloadTimer.restart()
-        onAdapterUpdated: fileWriteTimer.restart()
+        onAdapterUpdated: if (root.ready) fileWriteTimer.restart()
         onLoaded: root.ready = true
         onLoadFailed: error => {
             if (error == FileViewError.FileNotFound) {
-                writeAdapter();
+                // Missing legacy preferences use defaults without creating an
+                // unrelated configuration tree merely by opening the player.
+                root.ready = true;
             }
         }
 

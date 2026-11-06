@@ -2,6 +2,10 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.UPower
+import Quickshell // BATTERY INDICATOR IMPORT
+import Quickshell
+import "./"
+import "../globals"
 
 ColumnLayout {
   id: root
@@ -9,11 +13,12 @@ ColumnLayout {
   property int compWidth: 0
   property int spacerHeight: compWidth*.167
 
-  property string dayName: "MON"
-  property string dayNumber: "01"
+  readonly property string dayName: Qt.formatDate(ShellClock.now, "ddd").toUpperCase()
+  readonly property string dayNumber: Qt.formatDate(ShellClock.now, "dd")
+  readonly property date calendarDate: ShellClock.now
 
-  property string hours: "00"
-  property string minutes: "00"
+  readonly property string hours: Qt.formatDateTime(ShellClock.now, "hh")
+  readonly property string minutes: Qt.formatDateTime(ShellClock.now, "mm")
 
   property var mouseDevice: {
     let allDevices = UPower.devices.values;
@@ -35,6 +40,9 @@ ColumnLayout {
   property bool isCharging: !UPower.onBattery
   property string batteryGlyph: ""
   property string batteryColor: "#BADCBD"
+  // BEGIN BATTERY INDICATOR STATE
+  readonly property bool powerSaving: PowerProfiles.profile === PowerProfile.PowerSaver
+  // END BATTERY INDICATOR STATE
 
   onMouseBatteryLevelChanged: updateMouseBatteryVisuals()
   onHaveMouseBatteryChanged: updateMouseBatteryVisuals()
@@ -81,20 +89,16 @@ ColumnLayout {
     root.updateMouseBatteryVisuals()
   }
 
-  Timer {
-    interval: 1000
-    running: true
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: {
-      let date = new Date();
-      let dayStr = date.toLocaleDateString(Qt.locale(), "ddd");
-      root.dayName = dayStr.toUpperCase();
-      root.dayNumber = String(date.getDate()).padStart(2, '0');
-      root.hours = date.toLocaleTimeString(Qt.locale(), "hh");
-      root.minutes = date.toLocaleTimeString(Qt.locale(), "mm");
+  ColumnLayout {
+    id: dateIndicator
+    Layout.alignment: Qt.AlignHCenter
+    spacing: 0
+    HoverHandler { id: dateHover }
+    CalendarToolTip {
+      anchorItem: dateIndicator
+      hovered: dateHover.hovered
+      date: root.calendarDate
     }
-  }
   Text {
     Layout.alignment: Qt.AlignHCenter
     horizontalAlignment: Text.AlignHCenter
@@ -113,6 +117,7 @@ ColumnLayout {
     font.bold: true
     color: "#cdd6f4"
     text: root.dayNumber
+  }
   }
 
   Item { implicitHeight: root.spacerHeight }
@@ -153,13 +158,112 @@ ColumnLayout {
     color: root.mouseBatteryColor
   }
 
-  Text {
+  Item {
+    id: batteryIndicator
     visible: root.haveBattery
     Layout.alignment: Qt.AlignHCenter
-    font.family: "mononoki Nerd Font"
-    font.pixelSize: root.compWidth*.33
-    text: root.batteryGlyph
-    color: root.batteryColor
+    implicitWidth: batterySymbol.implicitWidth // BATTERY INDICATOR WIDTH
+    implicitHeight: batterySymbol.implicitHeight
+    Text {
+      id: batterySymbol
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      font.family: "mononoki Nerd Font"
+      font.pixelSize: root.compWidth*.33
+      text: root.batteryGlyph
+      color: root.batteryColor
+    }
+    // BEGIN BATTERY INDICATOR LEAF
+    Rectangle {
+      id: leaf
+      anchors.right: batterySymbol.right
+      anchors.rightMargin: -5
+      anchors.top: batterySymbol.top
+      anchors.topMargin: -3
+      width: Math.max(13, root.compWidth * .24)
+      height: width
+      radius: width / 2
+      color: "#1e1e2e"
+      border.width: 1
+      border.color: "#39463d"
+      opacity: root.powerSaving ? 1 : 0
+      visible: opacity > 0
+      scale: root.powerSaving ? 1 : .8
+      Behavior on opacity { NumberAnimation { duration: 150 } }
+      Behavior on scale { NumberAnimation { duration: 150 } }
+      MaterialSymbol {
+        anchors.centerIn: parent
+        text: "eco"
+        iconSize: leaf.width * .75
+        fill: 1
+        color: "#a6e3a1"
+      }
+    }
+    property bool tooltipReady: false
+    HoverHandler {
+      id: batteryHover
+      onHoveredChanged: {
+        if (hovered) tooltipDelay.restart()
+        else {
+          tooltipDelay.stop()
+          batteryIndicator.tooltipReady = false
+        }
+      }
+    }
+    Timer {
+      id: tooltipDelay
+      interval: 300
+      onTriggered: batteryIndicator.tooltipReady = true
+    }
+    PopupWindow {
+      anchor.item: batteryIndicator
+      anchor.rect.x: batteryIndicator.width + 12
+      anchor.rect.y: (batteryIndicator.height - implicitHeight) / 2
+      visible: root.powerSaving && batteryIndicator.tooltipReady && batteryHover.hovered
+      implicitWidth: 174
+      implicitHeight: 58
+      color: "transparent"
+      mask: Region {}
+
+      ToolTipSurface {
+        anchors.fill: parent
+
+        RowLayout {
+          anchors.fill: parent
+          anchors.margins: 11
+          spacing: 10
+          Rectangle {
+            implicitWidth: 32
+            implicitHeight: 32
+            radius: 10
+            color: "#29372e"
+            MaterialSymbol {
+              anchors.centerIn: parent
+              text: "eco"
+              iconSize: 21
+              fill: 1
+              color: "#a6e3a1"
+            }
+          }
+          ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 3
+            Text {
+              text: "Power saving"
+              color: "#cdd6f4"
+              font.pixelSize: 13
+              font.bold: true
+            }
+            Text {
+              text: "Enabled"
+              color: "#a6e3a1"
+              font.pixelSize: 11
+            }
+          }
+        }
+      }
+    }
+    // END BATTERY INDICATOR LEAF
   }
   Text {
     visible: root.haveBattery

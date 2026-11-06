@@ -1,0 +1,10 @@
+// Managed by the Quickshell Battery feature; removed by uninstall-power.sh.
+polkit.addRule(function(action, subject) {
+    // pkexec maps this unique action to the fixed boost-only executable using
+    // the root-owned .policy annotation. Do not require privileged action
+    // details here: ordinary pkcheck probes cannot supply them.
+    if (action.id === "org.local.quickshell.power.boost" &&
+        subject.user === __USER_JSON__ && subject.local && subject.active) {
+        return polkit.Result.YES;
+    }
+});

@@ -9,6 +9,8 @@ Rectangle {
   id: root
   
   property int compWidth: 0
+  property string screenName: ""
+  property int sidebarWidth: 55
   readonly property int trayRadius: compWidth/2
 
   Layout.alignment: Qt.AlignHCenter
@@ -19,7 +21,6 @@ Rectangle {
   radius: trayRadius
 
   // AppMenu { id: menu }
-  GlobalMenu { id: menu }
   signal openMenuRequested(real targetY, var menuData)
 
   ColumnLayout {
@@ -50,11 +51,6 @@ Rectangle {
           ColorAnimation { duration: 200 } 
         }
 
-        QsMenuOpener {
-          id: menuOpener
-          menu: delegateRoot.trayData.menu
-        }
-
         Image {
           anchors.fill: parent
           anchors.margins: root.compWidth*.1
@@ -76,27 +72,14 @@ Rectangle {
           onClicked: (mouse) => {
             if (mouse.button === Qt.RightButton) {
               let pos = delegateRoot.mapToItem(null, 0, 0);
-              GlobalMenuState.targetY = pos.y;
-              if (!GlobalMenuState.isVisible) {
-                Qt.callLater(() => {
-                  GlobalMenuState.menuModel = menuOpener.children;
-                  GlobalMenuState.persist = false;
-                  GlobalMenuState.isVisible = true;
-                  GlobalMenuState.menuType = 0;
-                });
-              }
-              else {
-                GlobalMenuState.menuModel = menuOpener.children;
-                GlobalMenuState.persist = false;
-                GlobalMenuState.isVisible = true;
-                GlobalMenuState.menuType = 0;
-              }
+              GlobalMenuState.openAt(pos.y, [], 0, false, root.screenName, root.sidebarWidth, delegateRoot.trayData);
             } else if (mouse.button === Qt.LeftButton) {
               delegateRoot.trayData.activate(0, 0) 
               GlobalMenuState.isVisible = false
             }
           }
         }
+        Component.onDestruction: if (GlobalMenuState.menuSource === trayData) GlobalMenuState.isVisible = false
       }
     }
   }

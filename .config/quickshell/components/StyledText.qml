@@ -3,6 +3,7 @@ import "./"
 
 Text {
     id: root
+    textFormat: Text.PlainText
     property bool animateChange: false
     property real animationDistanceX: 0
     property real animationDistanceY: 6

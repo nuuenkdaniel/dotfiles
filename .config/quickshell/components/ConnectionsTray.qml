@@ -10,6 +10,10 @@ Rectangle {
   id: root
 
   property int compWidth: 0
+  property string screenName: ""
+  property int sidebarWidth: 55
+  signal wifiRequested(var network)
+  readonly property bool ownsMenu: !GlobalMenuState.screenName || GlobalMenuState.screenName === screenName
   readonly property int fontSize: compWidth/2
 
   Layout.alignment: Qt.AlignHCenter
@@ -34,7 +38,7 @@ Rectangle {
   property bool isEthernet: activeAdapter ? activeAdapter.type === DeviceType.Wired : false
   property bool isWifi: activeAdapter ? activeAdapter.type === DeviceType.Wifi : false
   property var currentWifi: {
-    if (!activeAdapter) { return null; }
+    if (!activeAdapter || activeAdapter.type !== DeviceType.Wifi) { return null; }
     let networks = activeAdapter.networks.values;
     for (let i = 0; i < networks.length; i++) {
       if (networks[i].connected) { return networks[i]; }
@@ -44,8 +48,9 @@ Rectangle {
   property int wifiSignalPercentage: currentWifi ? currentWifi.signalStrength*100 : 0
   property string networkGlyph: isEthernet? "󰈀" : "󰤯" 
 
-  property bool isPowered: Bluetooth.defaultAdapter.state === BluetoothAdapterState.Enabled
-  property var btDevs: isPowered ? Bluetooth.defaultAdapter.devices.values : null
+  readonly property var btAdapter: Bluetooth.defaultAdapter
+  property bool isPowered: btAdapter?.enabled ?? false
+  property var btDevs: isPowered ? btAdapter.devices.values : []
   property bool isConnected: {
     if (btDevs) {
       for (let i = 0; i < btDevs.length; i++) {
@@ -87,24 +92,24 @@ Rectangle {
     }
   }
 
-  Timer {
-    running: (GlobalMenuState.isVisible && GlobalMenuState.menuType === 1)
-    interval: 1500
-    repeat: true
-    onTriggered: {
-      let newMenu = root.connectionMenu()
-      if (root.isMenuChanged(GlobalMenuState.menuModel, newMenu)) {
-        GlobalMenuState.menuModel = root.connectionMenu()
-      }
-    }
+  readonly property var liveNetworkMenu: root.ownsMenu && GlobalMenuState.isVisible && GlobalMenuState.menuType === 1 ? root.connectionMenu() : []
+  readonly property var liveBluetoothMenu: root.ownsMenu && GlobalMenuState.isVisible && GlobalMenuState.menuType === 2 ? root.bluetoothMenu() : []
+  readonly property var liveAudioMenu: root.ownsMenu && GlobalMenuState.isVisible && GlobalMenuState.menuType === 3 ? root.audioSinksMenu() : []
+  onLiveNetworkMenuChanged: publishMenu(1, liveNetworkMenu)
+  onLiveBluetoothMenuChanged: publishMenu(2, liveBluetoothMenu)
+  onLiveAudioMenuChanged: publishMenu(3, liveAudioMenu)
+
+  function publishMenu(type, model) {
+    if (root.ownsMenu && GlobalMenuState.isVisible && GlobalMenuState.menuType === type && isMenuChanged(GlobalMenuState.menuModel, model))
+      GlobalMenuState.menuModel = model
   }
 
   function isMenuChanged(oldMenu, newMenu) {
     if (!oldMenu || !newMenu) return true;
     if (oldMenu.length !== newMenu.length) return true;
     for (let i = 0; i < oldMenu.length; i++) {
-      if (oldMenu[i].text !== newMenu[i].text) {
-        return true; 
+      for (const field of ["text", "enabled", "checked", "isToggle", "identity"]) {
+        if (oldMenu[i][field] !== newMenu[i][field]) return true;
       }
     }
     return false; 
@@ -123,29 +128,31 @@ Rectangle {
       const dev = allDevices[i];
       if (!dev) { continue; }
       if (dev.type === DeviceType.Wired) {
-        let menuText = "Wired Connection" + (i+1);
+        let menuText = (dev.name || "Wired connection") + (dev.connected ? " · Connected" : " · Disconnected");
         networkMenu.push({
           isSeparator: false,
           text: menuText,
-          triggered: function() { return; }
+          enabled: false
         });
       }
     }
 
-    // Handle Wifi
-    for (let i = 0; i < allDevices.length; i++) {
-      const dev = allDevices[i];
-      if (!dev) { continue; }
-      if (dev.type === DeviceType.Wifi) {
-        networkMenu.push({
-          isHeader: false,
-          isSeparator: true,
-        });
-        networkMenu.push({
-          isHeader: true,
-          isSeparator: false,
-          text: "Wi-Fi"
-        });
+    const wifiDevices = allDevices.filter(dev => dev && dev.type === DeviceType.Wifi);
+    networkMenu.push({ isSeparator: true });
+    networkMenu.push({
+      text: "Wi-Fi", isToggle: true, checked: Networking.wifiEnabled,
+      enabled: wifiDevices.length > 0 && Networking.wifiHardwareEnabled,
+      triggered: function() {
+        if (wifiDevices.length && Networking.wifiHardwareEnabled)
+          Networking.wifiEnabled = !Networking.wifiEnabled;
+      }
+    });
+    if (!wifiDevices.length || !Networking.wifiHardwareEnabled || !Networking.wifiEnabled) {
+      networkMenu.push({ text: !wifiDevices.length ? "No Wi-Fi adapter" : !Networking.wifiHardwareEnabled ? "Blocked by hardware switch" : "Wi-Fi is off", enabled: false });
+      return networkMenu;
+    }
+    // Networks appear only while the radio is on; the switch always remains accessible.
+    for (const dev of wifiDevices) {
         let networks = dev.networks.values
         for (let j = 0; j < networks.length; j++) {
           let signalStrength = networks[j].signalStrength;
@@ -160,12 +167,16 @@ Rectangle {
           networkMenu.push({
             isSeparator: false,
             text: menuText,
+            identity: networks[j],
+            enabled: !networks[j].stateChanging,
             triggered: function() { 
-              networks[j].connect();
+              const network = networks[j];
+              if (network.connected) network.disconnect();
+              else if (network.known || network.security === WifiSecurityType.Open || network.security === WifiSecurityType.Owe) network.connect();
+              else root.wifiRequested(network);
             }
           });
         }
-      }
     }
     return networkMenu
   }
@@ -181,9 +192,24 @@ Rectangle {
       root.updateWifiScannerState();
     }
   }
+  Connections {
+    target: Networking
+    function onWifiEnabledChanged() { root.updateWifiScannerState(); root.refreshRadioMenu(1) }
+    function onWifiHardwareEnabledChanged() { root.updateWifiScannerState(); root.refreshRadioMenu(1) }
+  }
+  Connections {
+    target: root.btAdapter
+    function onEnabledChanged() { root.refreshRadioMenu(2) }
+  }
+  onBtAdapterChanged: refreshRadioMenu(2)
+
+  function refreshRadioMenu(type) {
+    if (!root.ownsMenu || !GlobalMenuState.isVisible || GlobalMenuState.menuType !== type) return
+    GlobalMenuState.menuModel = type === 1 ? root.connectionMenu() : root.bluetoothMenu()
+  }
 
   function updateWifiScannerState() {
-    let enableScan = (GlobalMenuState.isVisible && GlobalMenuState.menuType === 1);
+    let enableScan = GlobalMenuState.isVisible && GlobalMenuState.menuType === 1 && Networking.wifiEnabled && Networking.wifiHardwareEnabled;
 
     for (let i = 0; i < allDevices.length; i++) {
       const dev = allDevices[i];
@@ -192,6 +218,7 @@ Rectangle {
       }
     }
   }
+  onAllDevicesChanged: updateWifiScannerState()
 
   onIsPoweredChanged: updateBTVisuals()
   onIsConnectedChanged: updateBTVisuals()
@@ -201,20 +228,16 @@ Rectangle {
     else { blueToothGlyph = "󰂲"; }
   }
 
-  Timer {
-    running: (GlobalMenuState.isVisible && GlobalMenuState.menuType === 2)
-    interval: 1000
-    repeat: true
-    onTriggered: {
-      let newMenu = root.bluetoothMenu()
-      if (root.isMenuChanged(GlobalMenuState.menuModel, newMenu)) {
-        GlobalMenuState.menuModel = root.bluetoothMenu()
-      }
-    }
-  }
-
   function bluetoothMenu() {
-    let btMenu = [];
+    let btMenu = [{
+      text: "Bluetooth", isToggle: true, checked: root.isPowered, enabled: !!root.btAdapter,
+      triggered: function() { if (root.btAdapter) root.btAdapter.enabled = !root.btAdapter.enabled; }
+    }];
+    if (!root.btAdapter || !root.isPowered) {
+      btMenu.push({text: root.btAdapter ? "Bluetooth is off" : "No Bluetooth adapter", enabled: false});
+      return btMenu;
+    }
+    btMenu.push({isSeparator: true});
     for (let i = 0; i < btDevs.length; i++) {
       const dev = btDevs[i];
       if (!dev) { continue; }
@@ -223,20 +246,20 @@ Rectangle {
         btMenu.push({
           isSeparator: false,
           text: menuText,
+          identity: dev,
           triggered: function() {
-            dev.connected = !dev.connected
+            if (dev.connected) dev.disconnect();
+            else dev.connect();
           }
         });
       }
     }
+    if (!btDevs.some(dev => dev && dev.paired)) btMenu.push({text: "No paired devices", enabled: false});
     return btMenu;
   }
 
   onActiveAudioSinkChanged: {
     updateAudioVisuals()
-    if (GlobalMenuState.isVisible && GlobalMenuState.menuType === 3) {
-      GlobalMenuState.menuModel = root.audioSinksMenu();
-    }
   }
   onVolumeChanged: updateAudioVisuals()
   onMutedChanged: updateAudioVisuals()
@@ -264,6 +287,7 @@ Rectangle {
         audioMenu.push({
           isSeparator: false,
           text: menuText,
+          identity: node,
           triggered: function() {
             Pipewire.preferredDefaultAudioSink = node;
           },
@@ -272,6 +296,12 @@ Rectangle {
     }
 
     return audioMenu
+  }
+
+  function openMenu(anchor, type) {
+    const position = anchor.mapToItem(null, 0, 0)
+    const model = type === 1 ? connectionMenu() : type === 2 ? bluetoothMenu() : audioSinksMenu()
+    GlobalMenuState.openAt(position.y, model, type, true, root.screenName, root.sidebarWidth)
   }
 
   ColumnLayout {
@@ -285,6 +315,12 @@ Rectangle {
       font.pixelSize: root.fontSize
       text: root.networkGlyph
       color: "#f5e0dc"
+      activeFocusOnTab: true
+      Accessible.role: Accessible.Button
+      Accessible.name: "Network menu"
+      Accessible.onPressAction: root.openMenu(networkIcon, 1)
+      Keys.onReturnPressed: root.openMenu(networkIcon, 1)
+      Keys.onSpacePressed: root.openMenu(networkIcon, 1)
       MouseArea {
         anchors.fill: parent
         hoverEnabled: true 
@@ -292,27 +328,18 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
 
         onClicked: (mouse) => {
-          let pos = networkIcon.mapToItem(null, 0, 0);
-          GlobalMenuState.targetY = pos.y;
-          if (!GlobalMenuState.isVisible) {
-            Qt.callLater(() => {
-              GlobalMenuState.menuModel = root.connectionMenu();
-              GlobalMenuState.persist = true;
-              GlobalMenuState.isVisible = true;
-              GlobalMenuState.menuType = 1
-            });
-          }
-          else {
-            GlobalMenuState.targetY = pos.y;
-            GlobalMenuState.persist = true;
-            GlobalMenuState.menuModel = root.connectionMenu();
-            GlobalMenuState.menuType = 1
-          }
+          root.openMenu(networkIcon, 1);
         }
       }
     }
     Text {
       id: bluetoothIcon
+      activeFocusOnTab: true
+      Accessible.role: Accessible.Button
+      Accessible.name: "Bluetooth menu"
+      Accessible.onPressAction: root.openMenu(bluetoothIcon, 2)
+      Keys.onReturnPressed: root.openMenu(bluetoothIcon, 2)
+      Keys.onSpacePressed: root.openMenu(bluetoothIcon, 2)
       Layout.alignment: Qt.AlignHCenter
       font.family: "mononoki Nerd Font"
       font.pixelSize: root.fontSize
@@ -325,27 +352,18 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
 
         onClicked: (mouse) => {
-          let pos = bluetoothIcon.mapToItem(null, 0, 0);
-          GlobalMenuState.targetY = pos.y;
-          if (!GlobalMenuState.isVisible) {
-            Qt.callLater(() => {
-              GlobalMenuState.menuModel = root.bluetoothMenu();
-              GlobalMenuState.persist = true;
-              GlobalMenuState.isVisible = true;
-              GlobalMenuState.menuType = 2
-            });
-          }
-          else {
-            GlobalMenuState.targetY = pos.y;
-            GlobalMenuState.persist = true;
-            GlobalMenuState.menuModel = root.bluetoothMenu();
-            GlobalMenuState.menuType = 2
-          }
+          root.openMenu(bluetoothIcon, 2);
         }
       }
     }
     DynamicAudioIcon {
       id: audioIcon
+      activeFocusOnTab: true
+      Accessible.role: Accessible.Button
+      Accessible.name: "Audio output menu"
+      Accessible.onPressAction: root.openMenu(audioIcon, 3)
+      Keys.onReturnPressed: root.openMenu(audioIcon, 3)
+      Keys.onSpacePressed: root.openMenu(audioIcon, 3)
       fontSize: root.fontSize
       MouseArea {
         anchors.fill: parent
@@ -354,22 +372,7 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
 
         onClicked: (mouse) => {
-          let pos = audioIcon.mapToItem(null, 0, 0);
-          GlobalMenuState.targetY = pos.y;
-          if (!GlobalMenuState.isVisible) {
-            Qt.callLater(() => {
-              GlobalMenuState.menuModel = root.audioSinksMenu();
-              GlobalMenuState.persist = true;
-              GlobalMenuState.isVisible = true;
-              GlobalMenuState.menuType = 3
-            });
-          }
-          else {
-            GlobalMenuState.targetY = pos.y;
-            GlobalMenuState.persist = true;
-            GlobalMenuState.menuModel = root.audioSinksMenu();
-            GlobalMenuState.menuType = 3
-          }
+          root.openMenu(audioIcon, 3);
         }
       }
     }

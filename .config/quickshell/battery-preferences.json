@@ -1,0 +1,19 @@
+{
+  "limitBrightness": false,
+  "brightnessCap": 40,
+  "reduceRefresh": false,
+  "keyboardOff": false,
+  "reduceEffects": false,
+  "autoLow": false,
+  "lowThreshold": 20,
+  "autoUnplug": false,
+  "normalOnAc": false,
+  "customBase": "balanced",
+  "customCpuEnabled": false,
+  "customBoost": true,
+  "customLimit": 100,
+  "customSetBrightness": false,
+  "customBrightness": 40,
+  "customSetKeyboard": true,
+  "customKeyboard": 0
+}

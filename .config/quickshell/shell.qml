@@ -10,6 +10,8 @@ Scope {
 
   StatusBar {}
   VolumeOSD {}
+  BrightnessOSD {}
   PlayerControls {}
+  Notifications {}
   // Test48 {}
 }

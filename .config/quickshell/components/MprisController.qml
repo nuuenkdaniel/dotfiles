@@ -10,6 +10,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
 import "./"
+import "../globals/MediaUtils.js" as MediaUtils
 
 /**
  * A service that provides easy access to the active Mpris player.
@@ -18,7 +19,7 @@ Singleton {
 	id: root;
 	property list<MprisPlayer> players: Mpris.players.values.filter(player => isRealPlayer(player));
 	property MprisPlayer trackedPlayer: null;
-	property MprisPlayer activePlayer: trackedPlayer ?? Mpris.players.values[0] ?? null;
+	readonly property MprisPlayer activePlayer: players.includes(trackedPlayer) ? trackedPlayer : MediaUtils.choosePlayer(players, null);
 	signal trackChanged(reverse: bool);
 
 	property bool __reverse: false;
@@ -29,21 +30,14 @@ Singleton {
 		p => p.dbusName?.startsWith('org.mpris.MediaPlayer2.plasma-browser-integration')
 	)
 	function isRealPlayer(player) {
-        if (!Config.options.media.filterDuplicatePlayers) {
-            return true;
-        }
-        return (
-            // Remove native browser buses only if plasma-browser-integration is actually active on D-Bus
-            !(hasActivePlasmaIntegration && player.dbusName.startsWith('org.mpris.MediaPlayer2.plasma-browser-integration')) && !(hasActivePlasmaIntegration && player.dbusName.startsWith('org.mpris.MediaPlayer2.chromium')) &&
-            // playerctld just copies other buses and we don't need duplicates
-            !player.dbusName?.startsWith('org.mpris.MediaPlayer2.playerctld') &&
-            // Non-instance mpd bus
-            !(player.dbusName?.endsWith('.mpd') && !player.dbusName.endsWith('MediaPlayer2.mpd')));
+        return MediaUtils.isEligible(player, Config.options.media.filterDuplicatePlayers, hasActivePlasmaIntegration);
     }
+	function reselect() { root.trackedPlayer = MediaUtils.choosePlayer(root.players, root.trackedPlayer); }
+	onPlayersChanged: Qt.callLater(root.reselect)
 
 	// Original stuff from fox below
 	Instantiator {
-		model: Mpris.players;
+		model: root.players;
 
 		Connections {
 			required property MprisPlayer modelData;
@@ -56,22 +50,12 @@ Singleton {
 			}
 
 			Component.onDestruction: {
-				if (root.trackedPlayer == null || !root.trackedPlayer.isPlaying) {
-					for (const player of Mpris.players.values) {
-						if (player.playbackState.isPlaying) {
-							root.trackedPlayer = player;
-							break;
-						}
-					}
-
-					if (trackedPlayer == null && Mpris.players.values.length != 0) {
-						trackedPlayer = Mpris.players.values[0];
-					}
-				}
+				Qt.callLater(root.reselect);
 			}
 
 			function onPlaybackStateChanged() {
-				if (root.trackedPlayer !== modelData) root.trackedPlayer = modelData;
+				if (modelData.isPlaying) root.trackedPlayer = modelData;
+				else root.reselect();
 			}
 		}
 	}
@@ -86,7 +70,7 @@ Singleton {
 		function onTrackArtUrlChanged() {
 			// console.log("arturl:", activePlayer.trackArtUrl)
 			// root.updateTrack();
-			if (root.activePlayer.uniqueId == root.activeTrack.uniqueId && root.activePlayer.trackArtUrl != root.activeTrack.artUrl) {
+			if (root.activePlayer && root.activeTrack && root.activePlayer.uniqueId == root.activeTrack.uniqueId && root.activePlayer.trackArtUrl != root.activeTrack.artUrl) {
 				// cantata likes to send cover updates *BEFORE* updating the track info.
 				// as such, art url changes shouldn't be able to break the reverse animation
 				const r = root.__reverse;
@@ -157,11 +141,11 @@ Singleton {
 	}
 
 	function setActivePlayer(player: MprisPlayer) {
-		const targetPlayer = player ?? Mpris.players[0];
-		console.log(`[Mpris] Active player ${targetPlayer} << ${activePlayer}`)
+		const targetPlayer = player ?? MediaUtils.choosePlayer(root.players, null);
+		if (targetPlayer && !root.players.includes(targetPlayer)) return;
 
 		if (targetPlayer && this.activePlayer) {
-			this.__reverse = Mpris.players.indexOf(targetPlayer) < Mpris.players.indexOf(this.activePlayer);
+			this.__reverse = root.players.indexOf(targetPlayer) < root.players.indexOf(this.activePlayer);
 		} else {
 			// always animate forward if going to null
 			this.__reverse = false;

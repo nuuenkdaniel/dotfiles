@@ -1,6 +1,6 @@
 ---@diagnostic disable: undefined-global
 
-hl.monitor({ output = "eDP-1", mode = "1920x1200@60", position = "0x0", scale = 1.2, disabled = false })
+hl.monitor({ output = "eDP-1", mode = "2880x1800@120", position = "0x0", scale = 1.67, disabled = false })
 -- hl.monitor({ output = "DP-1", mode = "preferred", position = "auto", scale = 1.5  })
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 
@@ -49,7 +49,7 @@ hl.config({
     }
   },
 
-  animations = { enabled = false },
+  animations = { enabled = true },
 
   input = {
     kb_model = "",
@@ -83,7 +83,7 @@ hl.config({
     disable_hyprland_logo = true,
     disable_splash_rendering = true,
     force_default_wallpaper = 0,
-    vrr = 3,
+    vrr = 1,
     mouse_move_enables_dpms = true,
     key_press_enables_dpms = true,
     animate_manual_resizes = true,
@@ -111,6 +111,13 @@ hl.animation({ leaf = "border", enabled = true, speed = 10, bezier = "default" }
 hl.animation({ leaf = "borderangle", enabled = true, speed = 8, bezier = "default" })
 hl.animation({ leaf = "fade", enabled = true, speed = 1, bezier = "default" })
 hl.animation({ leaf = "workspaces", enabled = true, speed = 3,  bezier = "myBezier" })
+
+-- Permissions
+hl.permission({ binary = "/usr/bin/grim", type = "screencopy", mode = "allow" })
+hl.permission({ binary = "/usr/bin/hyprlock", type = "screencopy", mode = "allow" })
+hl.permission({ binary = "/usr/bin/hyprpicker", type = "screencopy", mode = "allow" })
+hl.permission({ binary = "/usr/bin/sunshine", type = "screencopy", mode = "allow" })
+
 
 local mainMod = "SUPER"
 -- Window Manipulation
@@ -154,9 +161,10 @@ for i = 1, 10 do
 end
 
 -- Audio
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true })
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_SINK@ 0%"), { locked = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+; quickshell ipc call volume display"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-; quickshell ipc call volume display"), { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; quickshell ipc call volume display"), { locked = true })
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })
 hl.bind("XF86AudioStop", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
@@ -164,10 +172,11 @@ hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true 
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("changeAudio"), { locked = true })
 
 -- Brightness
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set 10%+"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 10%-"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set 5%+; quickshell ipc call brightness display"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%-; quickshell ipc call brightness display"), { locked = true, repeating = true })
 
 -- Quickshell
+hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("quickshell ipc call dashboard toggle"), { description = "Toggle dashboard" })
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("qs ipc call status toggle"))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("qs ipc call status toggle"))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("qs ipc call status toggle"), { release = true })
@@ -175,6 +184,7 @@ hl.bind(mainMod .. " + SHIFT + O", hl.dsp.exec_cmd("qs ipc call player toggle"))
 
 -- Screenshots
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("screenshot"))
+hl.bind("Print", hl.dsp.exec_cmd("screenshot"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("screenshot -s"))
 
 -- Other

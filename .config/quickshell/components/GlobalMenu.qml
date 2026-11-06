@@ -1,114 +1,114 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Effects
-import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import "../globals"
 
 PanelWindow {
-  id: root
-  visible: GlobalMenuState.isVisible
-  color: "transparent"
-  
-  property real targetX: 0
-
-  WlrLayershell.layer: WlrLayer.Top
-
-  anchors {
-    top: true
-    bottom: true
-    left: true
-    right: true
-  }
-
-  MouseArea {
-    anchors.fill: parent
-    onClicked: GlobalMenuState.isVisible = false
-  }
-
-  Rectangle {
-    id: popupMenu
-
-    x: GlobalMenuState.isVisible ? root.targetX : root.targetX - 30
-    y: (GlobalMenuState.targetY-15 + popupMenu.implicitHeight) < root.height ? GlobalMenuState.targetY-15 : root.height - popupMenu.implicitHeight
-    color: "#1e1e2e"
-    opacity: (menuLayout.implicitHeight > 0 && GlobalMenuState.isVisible) ? 1.0 : 0.0
-
-    topRightRadius: 20
-    bottomRightRadius: (y + popupMenu.implicitHeight) == root.height ? 0 : 20
-
-    implicitWidth: menuLayout.implicitWidth + 20
-    implicitHeight: menuLayout.implicitHeight + 20
-
-    layer.enabled: true
-    layer.effect: MultiEffect {
-        shadowEnabled: true
-        shadowHorizontalOffset: 0
-        shadowVerticalOffset: 0
-        shadowBlur: 1.0
-        shadowColor: Qt.rgba(0, 0, 0, 0.75) 
+    id: root
+    visible: GlobalMenuState.isVisible
+    color: "transparent"
+    exclusionMode: ExclusionMode.Ignore
+    property int sidebarWidth: 55
+    readonly property bool ownsMenu: GlobalMenuState.ownsScreen(screen?.name ?? "", Quickshell.screens[0]?.name ?? "")
+    readonly property real positioningHeight: height > 1 ? height : (screen?.height ?? 0)
+    readonly property bool joinedToBar: visible && ownsMenu
+    property var openMenus: []
+    readonly property var currentMenu: openMenus.length ? openMenus[openMenus.length - 1] : null
+    function clearNavigation() {
+        const previous = openMenus
+        openMenus = []
+        for (let i = previous.length - 1; i >= 0; --i) previous[i].destroy()
     }
-
-    Behavior on x { 
-      enabled: GlobalMenuState.isVisible
-      NumberAnimation { duration: 300; easing.type: Easing.OutExpo } 
+    function enterSubmenu(entry) {
+        const opener = submenuFactory.createObject(root, {menu: entry})
+        if (opener) openMenus = openMenus.concat([opener])
     }
-
-    Behavior on y { 
-      enabled: GlobalMenuState.isVisible
-      NumberAnimation { duration: 500; easing.type: Easing.OutExpo } 
+    function goBack() {
+        if (!openMenus.length) return
+        const previous = currentMenu
+        openMenus = openMenus.slice(0, -1)
+        previous.destroy()
     }
-
-    MouseArea {
-      anchors.fill: parent
+    anchors { top: true; bottom: true; left: true; right: true }
+    WlrLayershell.layer: WlrLayer.Top
+    WlrLayershell.namespace: "shell-menu"
+    WlrLayershell.keyboardFocus: visible && ownsMenu ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+    // Keep the sidebar clickable for smooth menu switching; empty sidebar clicks
+    // are caught by its own background. Every other output still catches clicks.
+    mask: Region { x: root.sidebarWidth; y: 0; width: Math.max(1, root.width - x); height: root.height }
+    Component.onDestruction: if (ownsMenu && GlobalMenuState.isVisible) GlobalMenuState.isVisible = false
+    onScreenChanged: if (GlobalMenuState.isVisible && GlobalMenuState.screenName
+        && !Quickshell.screens.some(output => output.name === GlobalMenuState.screenName)) GlobalMenuState.isVisible = false
+    Connections {
+        target: GlobalMenuState
+        function onOpenRevisionChanged() { root.clearNavigation(); if (menu.item) menu.item.forceActiveFocus() }
+        function onIsVisibleChanged() {
+            if (!GlobalMenuState.isVisible) { popup.snap(); root.clearNavigation() }
+        }
     }
-
-    ColumnLayout {
-      id: menuLayout
-      anchors.centerIn: parent
-      spacing: 4
-
-      Repeater {
-        model: GlobalMenuState.menuModel
-
-        delegate: Rectangle {
-          id: delegateMenu
-          required property var modelData
-          readonly property bool isSeparator: modelData.isSeparator
-          readonly property bool isHeader: modelData.isHeader || false
-
-          Layout.fillWidth: true
-          implicitWidth: isSeparator ? 1 : menuText.implicitWidth + 20
-          implicitHeight: isSeparator ? 1 : 30
-          radius: isSeparator ? 0 : 6
-          color: isSeparator ? "#45475a" : (itemMouse.containsMouse ? "#313244" : "transparent")
-
-          Text {
-            id: menuText
+    QsMenuOpener {
+        id: trayMenu
+        menu: root.visible && root.ownsMenu ? GlobalMenuState.menuSource?.menu ?? null : null
+    }
+    // Keep ancestor menus open while navigating deeper; some tray applications
+    // discard dynamic children as soon as their parent receives a closed event.
+    Component { id: submenuFactory; QsMenuOpener {} }
+    SidebarMenuReveal {
+        id: reveal
+        opened: root.visible && root.ownsMenu && menu.status === Loader.Ready
+    }
+    MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons; onClicked: GlobalMenuState.isVisible = false }
+    // Clip the entrance and its shadow at the bar's edge, not over its icons.
+    // A one-pixel overlap avoids a fractional-scale compositor seam.
+    Item {
+      x: root.sidebarWidth - 1
+      width: Math.max(1, root.width - x)
+      height: root.height
+      clip: true
+      SidebarMenuGeometry {
+        id: popup
+        visible: root.ownsMenu
+        x: reveal.offset
+        anchorY: GlobalMenuState.targetY
+        availableHeight: root.positioningHeight
+        targetWidth: menu.item?.implicitWidth ?? 240
+        targetHeight: menu.item?.implicitHeight ?? 0
+        // Fresh opens lay out immediately underneath the slide-out. Once open,
+        // menu switches, submenus and live model changes share the same morph.
+        animateChanges: root.visible && root.ownsMenu && (GlobalMenuState.animatePosition || reveal.progress === 1)
+        opacity: reveal.progress
+        SidebarMenuBackground {
+            y: -shoulder
+            width: parent.width
+            panelHeight: popup.height
+            reachesBottom: popup.y + popup.height >= root.positioningHeight - .5
+            layer.enabled: popup.visible && root.visible
+            layer.effect: MultiEffect { shadowEnabled: true; shadowBlur: 1; shadowColor: "#bf000000" }
+        }
+        MouseArea { anchors.fill: parent }
+        Loader {
+            id: menu
             anchors.fill: parent
-            anchors.leftMargin: 10
-            verticalAlignment: Text.AlignVCenter
-            visible: !delegateMenu.isSeparator
-            text: delegateMenu.modelData.text ? delegateMenu.modelData.text.replace(/&/g, "") : ""
-            color: delegateMenu.isHeader ? "#e3c947" : "#cdd6f4" 
-            font.pixelSize: delegateMenu.isHeader ? 14 : 12
-          }
-
-          MouseArea {
-            id: itemMouse
-            anchors.fill: parent
-            enabled: !delegateMenu.isSeparator && !delegateMenu.isHeader
-            hoverEnabled: true
-            cursorShape: delegateMenu.isSeparator || delegateMenu.isHeader ? Qt.ArrowCursor : Qt.PointingHandCursor
-
-            onClicked: {
-              delegateMenu.modelData.triggered()
-              if (!GlobalMenuState.persist) { GlobalMenuState.isVisible = false; }
+            active: root.visible && root.ownsMenu
+            onLoaded: item.forceActiveFocus()
+            sourceComponent: PopupMenuContent {
+                menuModel: root.currentMenu ? root.currentMenu.children : GlobalMenuState.menuSource ? trayMenu.children : GlobalMenuState.menuModel
+                maximumWidth: Math.max(1, root.width - GlobalMenuState.sidebarWidth - 12)
+                maximumHeight: Math.max(1, root.positioningHeight - 12)
+                canGoBack: root.openMenus.length > 0
+                onBackRequested: root.goBack()
+                onCloseRequested: GlobalMenuState.isVisible = false
+                onEntryActivated: entry => {
+                    if (entry.hasChildren) root.enterSubmenu(entry)
+                    else {
+                        entry.triggered()
+                        if (!GlobalMenuState.persist) GlobalMenuState.isVisible = false
+                    }
+                }
             }
-          }
         }
       }
     }
-  }
 }
